@@ -5,37 +5,45 @@ package Client;
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 
+import exceptions.InvalidClientDataException;
+
 public class client {
 	
 	private static int numID = 1000;
 	private final String clientID;
 	private String fName, lName,email;
 	
-	// default constructor 
-	public client(){
-		client.numID++;
-		this.clientID = "C" + numID;
-		this.fName = "";
-		this.lName = "";
-		this.email = "";
-	}
 	
 	//parameterized consructor
-	public client(String f,String l, String email) {
+	public client(String f,String l, String email) throws InvalidClientDataException{
+
 		client.numID++;
 		this.clientID = "C" + numID;
+		if (f.length()>=50 | f.length()==0) {
+			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
+		} 
+
+		if (l.length()>=50 | l.length()==0) {
+			throw new InvalidClientDataException("Last Name should be between 1 and 50 characters");
+		} 
+		
+		if (email.length()>=100|!email.contains("@")|!email.contains(".")|email.contains(" ")){
+			throw new InvalidClientDataException("Invalid email format");
+		}
+
 		this.fName = f;
 		this.lName = l;
 		this.email = email;
 	}
 	
 	//copy Constructor 
-	public client (client c) {
-		client.numID++;
-		this.clientID = "C" + numID;
-		this.fName = c.fName;
-		this.lName = c.lName;
-		this.email = c.email;
+	public client (client c) throws InvalidClientDataException {
+		this(c.fName,c.lName,c.email);
+	}
+
+	// default constructor 
+	public client() throws InvalidClientDataException {
+		this(null,null,null);
 	}
 	
 	// methods 
@@ -55,17 +63,27 @@ public class client {
 	}
 
 	/////mutators 
-	public void setFName(String f) {
+	public void setFName(String f) throws InvalidClientDataException {
+		if (f.length()>=50 | f.length()==0) {
+			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
+		}
 		this.fName = f;
 	}
-	public void setLNname(String l) {
+	public void setLNname(String l) throws InvalidClientDataException {
+		if (l.length()>=50 | l.length()==0) {
+			throw new InvalidClientDataException("Last Name should be between 1 and 50 characters");
+		}
 		this.lName = l;
 	}
-	public void setEmail(String e) {
+	public void setEmail(String e) throws InvalidClientDataException {
+		if (e.length()>=100|!e.contains("@")|!e.contains(".")|e.contains(" ")){
+			throw new InvalidClientDataException("Invalid email format");
+		}
 		this.email = e;
 	}
 	
 	//To string method 
+	@Override
 	public String toString() {
 		return "Client ID: " + this.clientID + "\n"
 				+ "Name : " + fName + " " + lName + "\n"
