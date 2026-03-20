@@ -1,5 +1,4 @@
 package Travel;
-
 import exceptions.InvalidTransportDataException;
 
 public abstract class Transportation {
@@ -9,22 +8,32 @@ public abstract class Transportation {
 	protected double price = 0.0;
 	
 	
-
 	// parameterized constructor
-	public Transportation(String n, String d, String a){ 
+	public Transportation(String n, String d, String a)throws InvalidTransportDataException{ 
 		numId++;
 		this.transportID = "TR"+numId;
+		if (companyName == null || companyName.length() == 0 || companyName.length() > 50) {
+			throw new InvalidTransportDataException("Invalid company name");
+		}
+
+		if (depCity == null || depCity.length() == 0 || depCity.length() > 50) {
+			throw new InvalidTransportDataException("Invalid departure city");
+		}
+
+		if ((aCity == null || aCity.length() == 0 || aCity.length() > 50) || aCity.equals(depCity)) {
+			throw new InvalidTransportDataException("Invalid arrival city");
+		}
 		this.companyName = n;
 		this.depCity = d;
 		this.aCity=a;
 	}
 
 	// default constructor 
-	public Transportation(){
+	public Transportation() throws InvalidTransportDataException{
 		this(null,null,null);
 	}
 	// copy constructor 
-	public Transportation(Transportation t){
+	public Transportation(Transportation t) throws InvalidTransportDataException{
 		this(t.companyName,t.depCity,t.aCity);
 	}
 
@@ -40,13 +49,23 @@ public abstract class Transportation {
 	}
 
 	//setters
-	public void setCompanyName(String a){
+	public void setCompanyName(String a)throws InvalidTransportDataException {
+		if (a == null || a.length() == 0 || a.length() > 50) {
+			throw new InvalidTransportDataException("Invalid company name");
+		}
+
 		this.companyName = a;
 	}
-	public void setDepCity(String d){
+	public void setDepCity(String d)	throws InvalidTransportDataException{
+		if (d == null || d.length() == 0 || d.length() > 50) {
+			throw new InvalidTransportDataException("Invalid departure city");
+		}
 		this.depCity = d;
 	}
-	public void setACity(String a){
+	public void setACity(String a)throws InvalidTransportDataException{
+		if (a == null || a.length() == 0 || a.length() > 50) {
+			throw new InvalidTransportDataException("Invalid arrival city");
+		}
 		this.aCity = a;
 	}
 
@@ -60,11 +79,11 @@ public abstract class Transportation {
 
 	@Override
 	public abstract boolean equals(Object t);
-	
-	public abstract double calculateFare();
+	public abstract double calculateFare(); // was this suposed to be abstract? or should we make it concrete and override it in the subclasses?
+		
 
 	// calculate cost method 
-	public double calculateCost(int numberOfDays){
+	public double calculateCost(int numberOfDays){ // go back to this later after figuring out the fares issues 
 		 return this.price*numberOfDays;
 	}
 
