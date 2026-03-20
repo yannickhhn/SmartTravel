@@ -1,31 +1,42 @@
 
 package Travel;
 
+import exceptions.InvalidAccommodationDataException;
+
 public class Hotel extends Accomodation{
 	private float rating;
 
-	// default constructor
-	public Hotel(){
-		numId++;
-		this.accId = "A" + numId;
-		super.setName ("");
-		super.setLocation("");
-		super.setPrice(0.0);
-		this.rating = 0;
-	}
+	
 	//parameterized constructor
-	public Hotel(String name, String location, double price,float rating){
+	public Hotel(String name, String location, int nights, double price,float rating) throws InvalidAccommodationDataException{
 		numId++;
 		this.accId = "A" + numId;
 		super.setName (name);
 		super.setLocation(location);
 		super.setPrice(price);
+		super.setNumberofNights(nights);
+		if (rating < 0 || rating > 5) {
+			throw new InvalidAccommodationDataException("Invalid rating value");
+		}
 		this.rating = rating;
 	}
+
+	// default constructor
+	public Hotel() throws InvalidAccommodationDataException{
+		this(null,null,0,0,0);
+	}
+
 	// copy constructor
-	public Hotel(Hotel other) {
-		super(other.getName(), other.getLocation(), other.getPrice());
-		this.rating = other.rating;
+	public Hotel(Hotel other) throws InvalidAccommodationDataException {
+		this(other.getName(),other.getLocation(),other.getNumberofNights(),other.getPrice(),other.rating);
+	}
+
+	//setters
+	public void setRating(float r) throws InvalidAccommodationDataException{
+		if (r < 0 || r > 5) {
+			throw new InvalidAccommodationDataException("Invalid rating value");
+		}
+		this.rating = r;
 	}
 
 	//methods
@@ -35,18 +46,20 @@ public class Hotel extends Accomodation{
 				+"Hotel Name: " + super.getName()+ "\n"
 				+"Hotel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
-				+"Rating : " + this.rating + "/5";
+				+"Number of Nights : " + super.getNumberofNights()+"\n"
+				+"Rating : " + this.rating + "/5 Stars";
 	}
 	@Override
-	public boolean equals(Accomodation a){ 
+	public boolean equals(Object a){ 
 		if (!(a instanceof Hotel)|a==null) {
             return false;
         }
 		Hotel temp = (Hotel) a;
-		return super.getName().equalsIgnoreCase(a.getName()) 
-		& super.getLocation().equalsIgnoreCase(a.getLocation())
-		& super.getPrice() == a.getPrice()
-		& this.rating == temp.rating;
+		return super.getName().equalsIgnoreCase(temp.getName()) 
+			& super.getLocation().equalsIgnoreCase(temp.getLocation())
+			& super.getPrice() == temp.getPrice()
+			& super.getNumberofNights() == temp.getNumberofNights()
+			& this.rating == temp.rating;
 	}
 	@Override
 	public double calculateCost(int numberOfDays){

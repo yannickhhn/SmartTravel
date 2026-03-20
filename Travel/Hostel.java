@@ -1,32 +1,36 @@
 package Travel;
 
+import exceptions.InvalidAccommodationDataException;
+
 public class Hostel extends Accomodation{
 	private float bed;
 
 	// default constructor
-	public Hostel(){
-		numId++;
-		this.accId = "A" + numId;
-		super.setName ("");
-		super.setLocation("");
-		super.setPrice(0.0);
-		this.bed = 1;
+	public Hostel() throws InvalidAccommodationDataException{
+		this(null,null,0,0,0);
 	}
 
 	// parameterized constructor 
-	public Hostel(String name, String location, double price,float bed){
+	public Hostel(String name, String location, int nights,double price,float bed) throws InvalidAccommodationDataException{ 
 		numId++;
 		this.accId = "A" + numId;
 		super.setName (name);
 		super.setLocation(location);
+		super.setNumberofNights(nights);
+		if (price<=0 || price>150){
+			throw new InvalidAccommodationDataException("Hostels should be cheaper than 150 per night.");
+		}
+		
+		if (bed < 0 || bed > 10) {
+			throw new InvalidAccommodationDataException("Invalid number of bed");
+		}
 		super.setPrice(price);
 		this.bed = bed;
 	}
 	
 	// copy constructor
-	public Hostel(Hostel other) {
-		super(other.getName(), other.getLocation(), other.getPrice());
-		this.bed = other.bed;
+	public Hostel(Hostel other) throws InvalidAccommodationDataException {
+		this(other.getName(), other.getLocation(), other.getNumberofNights(), other.getPrice(), other.bed);
 	}
 
 	//methods
@@ -36,17 +40,19 @@ public class Hostel extends Accomodation{
 				+"Hostel Name: " + super.getName()+ "\n"
 				+"Hostel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
+				+"Number of Nights : " + super.getNumberofNights()+"\n"
 				+"Number of bed : " + this.bed;
 	}
 	@Override
-	public boolean equals(Accomodation a){ 
+	public boolean equals(Object a){ 
 		if (!(a instanceof Hostel) | a==null) {
             return false;
         }
 		Hostel temp = (Hostel) a;
-		return super.getName().equalsIgnoreCase(a.getName()) 
-		& super.getLocation().equalsIgnoreCase(a.getLocation())
-		& super.getPrice() == a.getPrice()
+		return super.getName().equalsIgnoreCase(temp.getName()) 
+		& super.getLocation().equalsIgnoreCase(temp.getLocation())
+		& super.getPrice() == temp.getPrice()
+		& super.getNumberofNights() == temp.getNumberofNights()
 		& this.bed == temp.bed;
 	}
 	
