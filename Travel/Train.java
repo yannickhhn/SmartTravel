@@ -1,43 +1,51 @@
 package Travel;
+import exceptions.InvalidTransportDataException;
 
 public class Train extends Transportation{
 	private String trainType;
 	private String seatClass;
 	private final double baseFare = 150.0;
 
-	//default constructor 
-	public Train(){
-		numId++;
-		this.transportID  = "TR"+numId;
-	}
+	
 
 	//parameterized constructor
-	public Train(String n, String d, String a,String trainType, String seatClass){
+	public Train(String n, String d, String a,String trainType, String seatClass) throws InvalidTransportDataException {
 		numId++;
 		this.transportID  = "TR"+numId;
         super.setCompanyName(n);
         super.setDepCity(d);
         super.setACity(a);
+		if ( trainType == null || trainType.length() == 0 || trainType.length() > 50) { // change this if we want to make it specific (ex; express, bullet, blablabla)
+			throw new InvalidTransportDataException("Invalid train type");
+		}
+		if ( seatClass == null || seatClass.length() == 0 || seatClass.length() > 50) {
+			throw new InvalidTransportDataException("Invalid seat class");
+		}
 		this.trainType = trainType;
 		this.seatClass = seatClass;
 	}
 
+	//default constructor 
+	public Train() throws InvalidTransportDataException {
+		this(null,null,null,null,null);
+	}
+
 	//copy constructor 
-	public Train(Train b){
-		numId++;
-		this.transportID  = "TR"+numId;
-        super.setCompanyName(b.getCompanyName());
-        super.setDepCity(b.getDepCity());
-        super.setACity(b.getACity());
-		this.trainType = b.trainType;
-		this.seatClass = b.seatClass;
+	public Train(Train b) throws InvalidTransportDataException {
+		this(b.getCompanyName(),b.getDepCity(),b.getACity(),b.trainType,b.seatClass);
 	}
 
 	//setters
-	public void setTrainType(String t){
+	public void setTrainType(String t)throws InvalidTransportDataException{
+		if (t == null || t.length() == 0 || t.length() > 50) { 
+			throw new InvalidTransportDataException("Invalid train type");
+		}
 		this.trainType = t;
 	}	
-	public void setSeatClass(String s){
+	public void setSeatClass(String s)throws InvalidTransportDataException{ // for now keep it simple and see if we have time
+		if (s == null || s.length() == 0 || s.length() > 50) {
+			throw new InvalidTransportDataException("Invalid seat class");
+		}
 		this.seatClass = s;
 	}
 	//getters
