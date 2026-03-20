@@ -5,6 +5,7 @@ package Client;
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 
+import exceptions.DuplicateEmailException;
 import exceptions.InvalidClientDataException;
 
 public class client {
@@ -12,13 +13,15 @@ public class client {
 	private static int numID = 1000;
 	private final String clientID;
 	private String fName, lName,email;
+	private static client[] clientArray;
 	
 	
 	//parameterized consructor
-	public client(String f,String l, String email) throws InvalidClientDataException{
+	public client(String f,String l, String email,client[] clients) throws InvalidClientDataException{
 
 		client.numID++;
 		this.clientID = "C" + numID;
+		this.clientArray = clients.clone();
 		if (f.length()>=50 | f.length()==0) {
 			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
 		} 
@@ -30,6 +33,14 @@ public class client {
 		if (email.length()>=100|!email.contains("@")|!email.contains(".")|email.contains(" ")){
 			throw new InvalidClientDataException("Invalid email format");
 		}
+		if (clients != null) {
+			for (int i=0; i<clients.length; i++) {
+				
+				if (clients[i] != null && clients[i].getEmail().equalsIgnoreCase(email)) {
+					throw new DuplicateEmailException("Email already exists");
+				}
+			}
+		}
 
 		this.fName = f;
 		this.lName = l;
@@ -38,12 +49,12 @@ public class client {
 	
 	//copy Constructor 
 	public client (client c) throws InvalidClientDataException {
-		this(c.fName,c.lName,c.email);
+		this(c.fName,c.lName,c.email,clientArray);
 	}
 
 	// default constructor 
 	public client() throws InvalidClientDataException {
-		this(null,null,null);
+		this(null,null,null,clientArray);
 	}
 	
 	// methods 
