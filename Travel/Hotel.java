@@ -9,12 +9,9 @@ public class Hotel extends Accomodation{
 	
 	//parameterized constructor
 	public Hotel(String name, String location, int nights, double price,float rating) throws InvalidAccommodationDataException{
+		super(name, location, price, nights);
 		numId++;
 		this.accId = "A" + numId;
-		super.setName (name);
-		super.setLocation(location);
-		super.setPrice(price);
-		super.setNumberofNights(nights);
 		if (rating < 0 || rating > 5) {
 			throw new InvalidAccommodationDataException("Invalid rating value");
 		}
@@ -47,7 +44,7 @@ public class Hotel extends Accomodation{
 				+"Hotel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
 				+"Number of Nights : " + super.getNumberofNights()+"\n"
-				+"Rating : " + this.rating + "/5 Stars";
+				+"Rating : " + this.rating + "/5 Stars \n";
 	}
 	@Override
 	public boolean equals(Object a){ 

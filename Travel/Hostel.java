@@ -12,11 +12,9 @@ public class Hostel extends Accomodation{
 
 	// parameterized constructor 
 	public Hostel(String name, String location, int nights,double price,float bed) throws InvalidAccommodationDataException{ 
+		super(name, location, 0.1, nights);
 		numId++;
 		this.accId = "A" + numId;
-		super.setName (name);
-		super.setLocation(location);
-		super.setNumberofNights(nights);
 		if (price<=0 || price>150){
 			throw new InvalidAccommodationDataException("Hostels should be cheaper than 150 per night.");
 		}
@@ -41,7 +39,7 @@ public class Hostel extends Accomodation{
 				+"Hostel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
 				+"Number of Nights : " + super.getNumberofNights()+"\n"
-				+"Number of bed : " + this.bed;
+				+"Number of bed : " + this.bed+ "\n";
 	}
 	@Override
 	public boolean equals(Object a){ 

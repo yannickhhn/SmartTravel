@@ -24,8 +24,9 @@ public class Trip {
 		this.tripID = "T"+numId;
 		clientArray = clientArray.clone();
 		boolean clientFound = false;
+
 		for (int i=0; i<clientArray.length; i++){
-			if (clientArray[i].getClientID().equals(client)){
+			if (clientArray[i].getClientID().equalsIgnoreCase(client.getClientID())){
 				clientFound = true;
 				break;
 			}
@@ -58,7 +59,7 @@ public class Trip {
 	//copy constructor 
 	public Trip(Trip t) throws InvalidTripDataException {
 		
-		this(t.destination,t.duration,t.basePrice,t.client,t.transportation,t.accomodation,t.clientArray);
+		this(t.destination,t.duration,t.basePrice,t.client,t.transportation,t.accomodation,clientArray);
 		
 	}
 
@@ -107,7 +108,7 @@ public class Trip {
 		boolean clientFound = false;
 
 		for (int i=0; i<clientArray.length; i++){
-			if (clientArray[i].getClientID().equals(cl)){
+			if (clientArray[i].getClientID().equalsIgnoreCase(cl.getClientID())){
 				clientFound = true;
 				break;
 			}

@@ -10,11 +10,10 @@ public class Train extends Transportation{
 
 	//parameterized constructor
 	public Train(String n, String d, String a,String trainType, String seatClass) throws InvalidTransportDataException {
+	    super(n,d,a);
 		numId++;
 		this.transportID  = "TR"+numId;
-        super.setCompanyName(n);
-        super.setDepCity(d);
-        super.setACity(a);
+        
 		if ( trainType == null || trainType.length() == 0 || trainType.length() > 50) { // change this if we want to make it specific (ex; express, bullet, blablabla)
 			throw new InvalidTransportDataException("Invalid train type");
 		}
@@ -65,7 +64,7 @@ public class Train extends Transportation{
             + "Departure city: " + super.getDepCity()+"\n"
             + "Arrival city: " + super.getACity()+"\n"
 			+ "Train type: " + this.trainType +"\n"
-			+ "Class: " + this.seatClass;
+			+ "Class: " + this.seatClass+ "\n";
 	}
 
 	// equals 

@@ -86,6 +86,7 @@ public abstract class Accomodation {
 	// methods
 	@Override
 	public abstract String toString();
+	@Override
 	public abstract boolean equals(Object a);
 	
 	// calculate cost method 

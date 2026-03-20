@@ -12,6 +12,7 @@ public class Bus extends Transportation{
 	//parameterized constructor
 	public Bus(String n, String d, String a,String busCompany, int stop) throws InvalidTransportDataException { // you can just call parent constructor 
 		super(n,d,a); // calling parent constructor 
+
 		numId++;
 		this.transportID  = "TR"+numId;
 		if (stop<1){
@@ -62,7 +63,7 @@ public class Bus extends Transportation{
             + "Departure city: " + super.getDepCity()+"\n"
             + "Arrival city: " + super.getACity()+"\n"
 			+ "Bus Company: " + this.busCompany +"\n"
-			+ "Number of Stops: " + this.stopNumber;
+			+ "Number of Stops: " + this.stopNumber + "\n";
 	}
 
 	// equals 

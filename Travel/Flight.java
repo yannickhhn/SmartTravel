@@ -11,11 +11,9 @@ public class Flight extends Transportation{
 
     // parameterized constructor
     public Flight(String n, String d, String a,String airline,float l) throws InvalidTransportDataException{
+        super(n,d,a);
         numId++;
 		this.transportID  = "TR"+numId;
-        super.setCompanyName(n);
-        super.setDepCity(d);
-        super.setACity(a);
         if (airline == null ||airline.length()==0||airline.length()>50){
             throw new InvalidTransportDataException("Invalid Airline name");
         }

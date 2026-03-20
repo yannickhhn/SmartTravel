@@ -12,15 +12,15 @@ public abstract class Transportation {
 	public Transportation(String n, String d, String a)throws InvalidTransportDataException{ 
 		numId++;
 		this.transportID = "TR"+numId;
-		if (companyName == null || companyName.length() == 0 || companyName.length() > 50) {
-			throw new InvalidTransportDataException("Invalid company name");
+		if ( n.length() == 0 || n.length() > 50) {
+			throw new InvalidTransportDataException("Invalid / constructor / transportation company name");
 		}
 
-		if (depCity == null || depCity.length() == 0 || depCity.length() > 50) {
+		if (d == null || d.length() == 0 || d.length() > 50) {
 			throw new InvalidTransportDataException("Invalid departure city");
 		}
 
-		if ((aCity == null || aCity.length() == 0 || aCity.length() > 50) || aCity.equals(depCity)) {
+		if ((a == null || a.length() == 0 || a.length() > 50) || a.equals(d)) {
 			throw new InvalidTransportDataException("Invalid arrival city");
 		}
 		this.companyName = n;
@@ -51,7 +51,7 @@ public abstract class Transportation {
 	//setters
 	public void setCompanyName(String a)throws InvalidTransportDataException {
 		if (a == null || a.length() == 0 || a.length() > 50) {
-			throw new InvalidTransportDataException("Invalid company name");
+			throw new InvalidTransportDataException("Invalid transportation company name");
 		}
 
 		this.companyName = a;
@@ -92,8 +92,8 @@ public abstract class Transportation {
 		if (original == null) return null;
 		Transportation[] copy = new Transportation[original.length];
 		for (int i = 0; i < original.length; i++) {
-			if (original[i] instanceof Flight)
-				copy[i] = new Flight((Flight) original[i]);
+			if (original[i] instanceof Flight flight)
+				copy[i] = new Flight(flight);
 			else if (original[i] instanceof Bus)
 				copy[i] = new Bus((Bus) original[i]);
 			else if (original[i] instanceof Train)

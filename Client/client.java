@@ -21,7 +21,7 @@ public class client {
 
 		client.numID++;
 		this.clientID = "C" + numID;
-		this.clientArray = clients.clone();
+		clientArray = clients.clone();
 		if (f.length()>=50 | f.length()==0) {
 			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
 		} 
