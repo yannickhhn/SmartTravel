@@ -1,44 +1,54 @@
 package Travel;
 
+import exceptions.InvalidTransportDataException;
+
 public class Flight extends Transportation{
     private String airline;
 	private float luggage;
     private final double baseFare = 250.0;
 
-    //default constructor 
-    public Flight(){
-        numId++;
-		this.transportID = "TR"+numId;
-    }
+    
 
     // parameterized constructor
-    public Flight(String n, String d, String a,String airline,float l){
+    public Flight(String n, String d, String a,String airline,float l) throws InvalidTransportDataException{
         numId++;
 		this.transportID  = "TR"+numId;
         super.setCompanyName(n);
         super.setDepCity(d);
         super.setACity(a);
+        if (airline == null ||airline.length()==0||airline.length()>50){
+            throw new InvalidTransportDataException("Invalid Airline name");
+        }
+
+        if (l<0|l>200){
+            throw new InvalidTransportDataException("Invalid luggage allowance");
+        }
+
         this.airline = airline;
         this.luggage = l;
     }
- 
+    
+    //default constructor 
+    public Flight()throws InvalidTransportDataException{
+        this(null,null,null,null,0);
+    }
 
     //copy constructor 
-	public Flight(Flight b){
-		numId++;
-		this.transportID  = "TR"+numId;
-        super.setCompanyName(b.getCompanyName());
-        super.setDepCity(b.getDepCity());
-        super.setACity(b.getACity());
-		this.airline = b.airline;
-		this.luggage = b.luggage;
+	public Flight(Flight b) throws InvalidTransportDataException{
+		this(b.getCompanyName(),b.getDepCity(),b.getACity(),b.airline,b.luggage);
 	}
 
    //setters 
-    public void setAirline(String a){
+    public void setAirline(String a) throws InvalidTransportDataException{
+        if (a == null || a.length() == 0 || a.length() > 50) {
+            throw new InvalidTransportDataException("Invalid Airline name");
+        }
         this.airline = a;
     }   
-    public void setLuggage(float l){
+    public void setLuggage(float l) throws InvalidTransportDataException{
+        if (l < 0 || l > 200) {
+            throw new InvalidTransportDataException("Invalid luggage allowance");
+        }
         this.luggage = l;
     }
     //getters
@@ -76,7 +86,6 @@ public class Flight extends Transportation{
     }
 
     @Override
-    
     public double calculateFare(){
         return this.baseFare + (this.luggage * 20);
     }
