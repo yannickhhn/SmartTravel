@@ -92,6 +92,9 @@ public class client {
 		}
 		this.email = e;
 	}
+	public void setclientID(String id){
+		
+	}
 	
 	//To string method 
 	@Override

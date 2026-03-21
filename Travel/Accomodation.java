@@ -5,7 +5,7 @@ import exceptions.InvalidAccommodationDataException;
 public abstract class Accomodation {
 	protected static int numId = 4001;
 	protected  String accId;
-	private String name, location;
+	private String AccomodationName, location;
 	private double price;
 	private int numberofNights;
 	
@@ -28,7 +28,7 @@ public abstract class Accomodation {
 		}
 		numId++;
 		this.accId = "A" + numId;
-		this.name = n;
+		this.AccomodationName = n;
 		this.location = l;
 		this.price = price;
 		this.numberofNights = numberofNights;
@@ -41,12 +41,15 @@ public abstract class Accomodation {
 
 	// copy constructor
 	public Accomodation(Accomodation a) throws InvalidAccommodationDataException{
-		this(a.name,a.location,a.price,a.numberofNights);
+		this(a.AccomodationName,a.location,a.price,a.numberofNights);
 	}
 	
 	// getters 
-	public String getName(){
-		return this.name;
+	public String getAccomodationID(){
+		return this.accId;
+	}
+	public String getAccomodationName(){
+		return this.AccomodationName;
 	}
 	public String getLocation(){
 		return this.location;
@@ -58,11 +61,11 @@ public abstract class Accomodation {
 		return this.numberofNights;
 	}
 	//setters
-	public void setName(String n)throws InvalidAccommodationDataException {
+	public void setAccomodationName(String n)throws InvalidAccommodationDataException {
 		if (n == null || n.length() == 0 || n.length() > 50) {
 			throw new InvalidAccommodationDataException("Invalid accommodation name");
 		}
-		this.name = n;
+		this.AccomodationName = n;
 	}
 	public void setLocation(String l)throws InvalidAccommodationDataException {
 		if (l == null || l.length() == 0 || l.length() > 50) {
@@ -83,6 +86,23 @@ public abstract class Accomodation {
 		this.numberofNights = n;
 	}
 
+	// static method to copy transportation array
+	public static Accomodation[] copyAccomodationArray(Accomodation[] original) throws	 InvalidAccommodationDataException {
+		if (original == null) {
+			throw new InvalidAccommodationDataException("Original array cannot be null");
+		}
+		Accomodation[] copy = new Accomodation[original.length];
+		for (int i = 0; i < original.length; i++) {
+			if (original[i] instanceof Hotel) {
+				copy[i] = new Hotel((Hotel) original[i]);
+			} else if (original[i] instanceof Hostel) {
+				copy[i] = new Hostel((Hostel) original[i]);
+			} else {
+				throw new InvalidAccommodationDataException("Unknown accommodation type at index " + i);
+			}
+		}
+		return copy;
+	}
 	// methods
 	@Override
 	public abstract String toString();

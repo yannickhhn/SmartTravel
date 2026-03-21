@@ -3,46 +3,39 @@ package Travel;
 import exceptions.InvalidTransportDataException;
 
 public class Flight extends Transportation{
-    private String airline;
+    
 	private float luggage;
     private final double baseFare = 250.0;
 
     
 
     // parameterized constructor
-    public Flight(String n, String d, String a,String airline,float l) throws InvalidTransportDataException{
+    public Flight(String n, String d, String a, float l) throws InvalidTransportDataException{
         super(n,d,a);
-        numId++;
-		this.transportID  = "TR"+numId;
-        if (airline == null ||airline.length()==0||airline.length()>50){
-            throw new InvalidTransportDataException("Invalid Airline name");
-        }
 
         if (l<0|l>200){
             throw new InvalidTransportDataException("Invalid luggage allowance");
         }
-
-        this.airline = airline;
         this.luggage = l;
+        
     }
     
     //default constructor 
     public Flight()throws InvalidTransportDataException{
-        this(null,null,null,null,0);
+        this(null,null,null,0);
     }
 
     //copy constructor 
 	public Flight(Flight b) throws InvalidTransportDataException{
-		this(b.getCompanyName(),b.getDepCity(),b.getACity(),b.airline,b.luggage);
+        this(b.getCompanyName(),b.getDepCity(),b.getACity(),b.luggage);
 	}
 
    //setters 
-    public void setAirline(String a) throws InvalidTransportDataException{
-        if (a == null || a.length() == 0 || a.length() > 50) {
-            throw new InvalidTransportDataException("Invalid Airline name");
-        }
-        this.airline = a;
-    }   
+    @Override
+    public void setCompanyName(String a) throws InvalidTransportDataException {
+        super.setCompanyName(a);
+       
+    }
     public void setLuggage(float l) throws InvalidTransportDataException{
         if (l < 0 || l > 200) {
             throw new InvalidTransportDataException("Invalid luggage allowance");
@@ -51,7 +44,7 @@ public class Flight extends Transportation{
     }
     //getters
     public String getAirline(){
-        return this.airline;
+        return super.getCompanyName();
     }
     public float getLuggage(){
         return this.luggage;
@@ -59,14 +52,14 @@ public class Flight extends Transportation{
     public double getBaseFare(){
         return this.baseFare;
     }
+    
     // toString method 
     @Override 
     public String toString(){
-        return "Company Name: " + super.getCompanyName()+"\n"
+        return "Airline: " + super.getCompanyName()+"\n"
             + "Departure city: " + super.getDepCity()+"\n"
             + "Arrival city: " + super.getACity()+"\n"
-            + "Airline: " + this.airline +"\n"
-            + "Luggage Allowance: " + this.luggage + "\n";
+            + "Luggage Allowance: " + this.luggage + "kg\n";
     }
 
     @Override 
@@ -79,7 +72,6 @@ public class Flight extends Transportation{
         return super.getCompanyName().equalsIgnoreCase(temp.getCompanyName())
                 & super.getDepCity().equalsIgnoreCase(temp.getDepCity())
                 & super.getACity().equalsIgnoreCase(temp.getACity())
-                & this.airline.equalsIgnoreCase(temp.airline)
                 & this.luggage == temp.luggage;
     }
 

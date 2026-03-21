@@ -10,8 +10,6 @@ public class Hotel extends Accomodation{
 	//parameterized constructor
 	public Hotel(String name, String location, int nights, double price,float rating) throws InvalidAccommodationDataException{
 		super(name, location, price, nights);
-		numId++;
-		this.accId = "A" + numId;
 		if (rating < 0 || rating > 5) {
 			throw new InvalidAccommodationDataException("Invalid rating value");
 		}
@@ -25,7 +23,7 @@ public class Hotel extends Accomodation{
 
 	// copy constructor
 	public Hotel(Hotel other) throws InvalidAccommodationDataException {
-		this(other.getName(),other.getLocation(),other.getNumberofNights(),other.getPrice(),other.rating);
+		this(other.getAccomodationName(),other.getLocation(),other.getNumberofNights(),other.getPrice(),other.rating);
 	}
 
 	//setters
@@ -36,11 +34,16 @@ public class Hotel extends Accomodation{
 		this.rating = r;
 	}
 
+	//getters
+	public float getRating(){
+		return this.rating;
+	}
+
 	//methods
 	@Override
 	public String toString() {
 		return "Accomodation ID: "+ this.accId +"\n"
-				+"Hotel Name: " + super.getName()+ "\n"
+				+"Hotel Name: " + super.getAccomodationName()+ "\n"
 				+"Hotel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
 				+"Number of Nights : " + super.getNumberofNights()+"\n"
@@ -52,7 +55,7 @@ public class Hotel extends Accomodation{
             return false;
         }
 		Hotel temp = (Hotel) a;
-		return super.getName().equalsIgnoreCase(temp.getName()) 
+		return super.getAccomodationName().equalsIgnoreCase(temp.getAccomodationName()) 
 			& super.getLocation().equalsIgnoreCase(temp.getLocation())
 			& super.getPrice() == temp.getPrice()
 			& super.getNumberofNights() == temp.getNumberofNights()

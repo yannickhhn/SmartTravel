@@ -12,8 +12,8 @@ public abstract class Transportation {
 	public Transportation(String n, String d, String a)throws InvalidTransportDataException{ 
 		numId++;
 		this.transportID = "TR"+numId;
-		if ( n.length() == 0 || n.length() > 50) {
-			throw new InvalidTransportDataException("Invalid / constructor / transportation company name");
+		if (n == null || n.length() == 0 || n.length() > 50) {
+			throw new InvalidTransportDataException("Invalid transportation company name");
 		}
 
 		if (d == null || d.length() == 0 || d.length() > 50) {
@@ -47,6 +47,9 @@ public abstract class Transportation {
 	public String getACity(){
 		return this.aCity;
 	}
+	public String getTransportID(){
+		return this.transportID;
+	}
 
 	//setters
 	public void setCompanyName(String a)throws InvalidTransportDataException {
@@ -67,6 +70,9 @@ public abstract class Transportation {
 			throw new InvalidTransportDataException("Invalid arrival city");
 		}
 		this.aCity = a;
+	}
+	public void setBaseFare(double fare) {
+		this.price = fare;
 	}
 
 	//methods 

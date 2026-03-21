@@ -13,8 +13,6 @@ public class Hostel extends Accomodation{
 	// parameterized constructor 
 	public Hostel(String name, String location, int nights,double price,float bed) throws InvalidAccommodationDataException{ 
 		super(name, location, 0.1, nights);
-		numId++;
-		this.accId = "A" + numId;
 		if (price<=0 || price>150){
 			throw new InvalidAccommodationDataException("Hostels should be cheaper than 150 per night.");
 		}
@@ -28,14 +26,27 @@ public class Hostel extends Accomodation{
 	
 	// copy constructor
 	public Hostel(Hostel other) throws InvalidAccommodationDataException {
-		this(other.getName(), other.getLocation(), other.getNumberofNights(), other.getPrice(), other.bed);
+		this(other.getAccomodationName(), other.getLocation(), other.getNumberofNights(), other.getPrice(), other.bed);
 	}
+
+	//setters 
+	public void setBed(float b) throws InvalidAccommodationDataException{
+		if (b < 0 || b > 10) {
+			throw new InvalidAccommodationDataException("Invalid number of bed");
+		}
+		this.bed = b;
+	}
+	//getters
+	public float getBed(){
+		return this.bed;
+	}
+
 
 	//methods
 	@Override
 	public String toString() {
 		return "Accomodation ID: "+ this.accId +"\n"
-				+"Hostel Name: " + super.getName()+ "\n"
+				+"Hostel Name: " + super.getAccomodationName()+ "\n"
 				+"Hostel Location: " + super.getLocation()+"\n"
 				+"Price : " + super.getPrice()+"\n"
 				+"Number of Nights : " + super.getNumberofNights()+"\n"
@@ -47,7 +58,7 @@ public class Hostel extends Accomodation{
             return false;
         }
 		Hostel temp = (Hostel) a;
-		return super.getName().equalsIgnoreCase(temp.getName()) 
+		return super.getAccomodationName().equalsIgnoreCase(temp.getAccomodationName()) 
 		& super.getLocation().equalsIgnoreCase(temp.getLocation())
 		& super.getPrice() == temp.getPrice()
 		& super.getNumberofNights() == temp.getNumberofNights()

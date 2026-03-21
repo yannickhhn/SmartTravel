@@ -78,7 +78,7 @@ public class Trip {
 		client temp = this.client;
 		return temp;
 	}
-	public String getTripId(){
+	public String getTripID(){
 		return this.tripID;
 	}
 	public Transportation getTransportation(){
