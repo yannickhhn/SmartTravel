@@ -45,11 +45,7 @@ public class Hostel extends Accomodation{
 	//methods
 	@Override
 	public String toString() {
-		return "Accomodation ID: "+ this.accId +"\n"
-				+"Hostel Name: " + super.getAccomodationName()+ "\n"
-				+"Hostel Location: " + super.getLocation()+"\n"
-				+"Price : " + super.getPrice()+"\n"
-				+"Number of Nights : " + super.getNumberofNights()+"\n"
+		return super.toString()
 				+"Number of bed : " + this.bed+ "\n";
 	}
 	@Override
@@ -58,10 +54,7 @@ public class Hostel extends Accomodation{
             return false;
         }
 		Hostel temp = (Hostel) a;
-		return super.getAccomodationName().equalsIgnoreCase(temp.getAccomodationName()) 
-		& super.getLocation().equalsIgnoreCase(temp.getLocation())
-		& super.getPrice() == temp.getPrice()
-		& super.getNumberofNights() == temp.getNumberofNights()
+		return super.equals(temp)
 		& this.bed == temp.bed;
 	}
 	

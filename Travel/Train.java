@@ -59,9 +59,7 @@ public class Train extends Transportation{
 	//to string 
 	@Override
 	public String toString(){
-		return "Company Name: " + super.getCompanyName()+"\n"
-            + "Departure city: " + super.getDepCity()+"\n"
-            + "Arrival city: " + super.getACity()+"\n"
+		return super.toString()
 			+ "Train type: " + this.trainType +"\n"
 			+ "Class: " + this.seatClass+ "\n";
 	}
@@ -74,9 +72,7 @@ public class Train extends Transportation{
         }
         Train temp = (Train) t;
 
-        return super.getCompanyName().equalsIgnoreCase(temp.getCompanyName())
-                & super.getDepCity().equalsIgnoreCase(temp.getDepCity())
-                & super.getACity().equalsIgnoreCase(temp.getACity())
+        return super.equals(temp)
                 & this.trainType.equalsIgnoreCase(temp.trainType)
                 & this.seatClass.equalsIgnoreCase( temp.seatClass);
     }

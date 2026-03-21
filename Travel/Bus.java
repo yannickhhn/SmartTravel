@@ -53,10 +53,8 @@ public class Bus extends Transportation{
 	//to string 
 	@Override
 	public String toString(){
-		return "Bus Company " + super.getCompanyName()+"\n"
-            + "Departure city: " + super.getDepCity()+"\n"
-            + "Arrival city: " + super.getACity()+"\n"
-			+ "Number of Stops: " + this.stopNumber + "\n";
+		return super.toString()
+            + "Number of Stops: " + this.stopNumber + "\n";
 	}
 
 	// equals 
@@ -67,9 +65,7 @@ public class Bus extends Transportation{
         }
         Bus temp = (Bus) t;
 
-        return super.getCompanyName().equalsIgnoreCase(temp.getCompanyName())
-                & super.getDepCity().equalsIgnoreCase(temp.getDepCity())
-                & super.getACity().equalsIgnoreCase(temp.getACity())
+        return super.equals(temp)
                 & this.stopNumber == temp.stopNumber;
     }
 

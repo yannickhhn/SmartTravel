@@ -56,9 +56,7 @@ public class Flight extends Transportation{
     // toString method 
     @Override 
     public String toString(){
-        return "Airline: " + super.getCompanyName()+"\n"
-            + "Departure city: " + super.getDepCity()+"\n"
-            + "Arrival city: " + super.getACity()+"\n"
+        return super.toString()
             + "Luggage Allowance: " + this.luggage + "kg\n";
     }
 
@@ -69,9 +67,7 @@ public class Flight extends Transportation{
         }
         Flight temp = (Flight) t;
 
-        return super.getCompanyName().equalsIgnoreCase(temp.getCompanyName())
-                & super.getDepCity().equalsIgnoreCase(temp.getDepCity())
-                & super.getACity().equalsIgnoreCase(temp.getACity())
+        return super.equals(temp)
                 & this.luggage == temp.luggage;
     }
 

@@ -105,9 +105,26 @@ public abstract class Accomodation {
 	}
 	// methods
 	@Override
-	public abstract String toString();
+	public  String toString(){
+		return "Accomodation ID : " + accId + '\n' +
+				"AccomodationName : " + AccomodationName + '\n' +
+				"Location : " + location + '\n' +
+				"Price : " + price + '\n' +
+				"Number of Nights : " + numberofNights +
+				'\n';
+	}
 	@Override
-	public abstract boolean equals(Object a);
+	public  boolean equals(Object a){
+		if (a == null || !(a instanceof Accomodation)) {
+			return false;
+		}
+		Accomodation other = (Accomodation) a;
+		return this.accId.equals(other.accId) &&
+				this.AccomodationName.equals(other.AccomodationName) &&
+				this.location.equals(other.location) &&
+				this.price == other.price &&
+				this.numberofNights == other.numberofNights;
+	}
 	
 	// calculate cost method 
 	public double calculateCost(int numberOfDays){

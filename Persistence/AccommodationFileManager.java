@@ -28,7 +28,7 @@ public class AccommodationFileManager {
     }
 
     // method to save accomodation array to file
-    public static void saveAccomodation(Accomodation[] accomodation, int accommodationCount, String filePath) throws IOException {
+    public static void saveAccomodations(Accomodation[] accomodation, int accommodationCount, String filePath) throws IOException {
        accomodationArray = accomodation.clone();
        AccommodationFileManager.accommodationCount = accommodationCount;
 

@@ -42,11 +42,7 @@ public class Hotel extends Accomodation{
 	//methods
 	@Override
 	public String toString() {
-		return "Accomodation ID: "+ this.accId +"\n"
-				+"Hotel Name: " + super.getAccomodationName()+ "\n"
-				+"Hotel Location: " + super.getLocation()+"\n"
-				+"Price : " + super.getPrice()+"\n"
-				+"Number of Nights : " + super.getNumberofNights()+"\n"
+		return super.toString()
 				+"Rating : " + this.rating + "/5 Stars \n";
 	}
 	@Override
@@ -55,10 +51,7 @@ public class Hotel extends Accomodation{
             return false;
         }
 		Hotel temp = (Hotel) a;
-		return super.getAccomodationName().equalsIgnoreCase(temp.getAccomodationName()) 
-			& super.getLocation().equalsIgnoreCase(temp.getLocation())
-			& super.getPrice() == temp.getPrice()
-			& super.getNumberofNights() == temp.getNumberofNights()
+		return super.equals(temp)
 			& this.rating == temp.rating;
 	}
 	@Override

@@ -7,6 +7,8 @@ package Client;
 
 import exceptions.DuplicateEmailException;
 import exceptions.InvalidClientDataException;
+import Travel.Trip;
+import service.SmartTravelService;
 
 public class client {
 	
@@ -14,6 +16,7 @@ public class client {
 	private final String clientID;
 	private String fName, lName,email;
 	private static client[] clientArray;
+	
 	
 	
 	//parameterized consructor
@@ -80,7 +83,7 @@ public class client {
 		}
 		this.fName = f;
 	}
-	public void setLNname(String l) throws InvalidClientDataException {
+	public void setLName(String l) throws InvalidClientDataException {
 		if (l.length()>=50 | l.length()==0) {
 			throw new InvalidClientDataException("Last Name should be between 1 and 50 characters");
 		}
@@ -92,9 +95,7 @@ public class client {
 		}
 		this.email = e;
 	}
-	public void setclientID(String id){
-		
-	}
+
 	
 	//To string method 
 	@Override
@@ -114,5 +115,7 @@ public class client {
 		}
 		return b;
 	}
+
+	
 
 }

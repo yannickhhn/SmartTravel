@@ -75,6 +75,7 @@ public abstract class Transportation {
 		this.price = fare;
 	}
 
+	 
 	//methods 
 	@Override
 	public String toString(){
@@ -84,7 +85,16 @@ public abstract class Transportation {
 	} 
 
 	@Override
-	public abstract boolean equals(Object t);
+	public  boolean equals(Object t){
+		if (!(t instanceof Transportation) | t==null) {
+			return false;
+		}
+		Transportation temp = (Transportation) t;
+		return this.getCompanyName().equalsIgnoreCase(temp.getCompanyName()) 
+		& this.getDepCity().equalsIgnoreCase(temp.getDepCity())
+		& this.getACity().equalsIgnoreCase(temp.getACity());
+	}
+
 	public abstract double calculateFare(); // was this suposed to be abstract? or should we make it concrete and override it in the subclasses?
 		
 
