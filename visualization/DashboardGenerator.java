@@ -1,3 +1,8 @@
+//----------------------------------------------
+//Assignment 1 
+//Package visualization 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package visualization;
 
 /**
@@ -18,17 +23,17 @@ package visualization;
  * @version Winter 2026 - A2
  */
 
-import service.SmartTravelService;
 import Client.client;
 import Travel.Trip;
 import exceptions.EntityNotFoundException;
-
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import service.SmartTravelService;
 
 public class DashboardGenerator {
     
+    TripChartGenerator chartGen = new TripChartGenerator();
 	/**
 	 * Main entry point for dashboard generation.
 	 * 
@@ -43,13 +48,14 @@ public class DashboardGenerator {
 	 * @throws IOException if file I/O fails (output dir/charts)
 	 */
     public static void generateDashboard(SmartTravelService service) throws IOException {
+
         // Ensure output dir exists
         new File("output").mkdirs();
         
         // 1. Generate charts FIRST (your existing code)
-        TripChartGenerator.generateCostBarChart(service.getTrips(), service.getTrips().length );
-        TripChartGenerator.generateDestinationPieChart(service.getTrips(), service.getTrips().length);
-        TripChartGenerator.generateDurationLineChart(service.getTrips(), service.getTrips().length);
+        TripChartGenerator.generateCostBarChart(service.getTrips());
+        TripChartGenerator.generateDestinationPieChart(service.getTrips());
+        TripChartGenerator.generateDurationLineChart(service.getTrips());
         
         // 2. Generate HTML dashboard
         generateHTMLDashboard(service);

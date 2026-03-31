@@ -1,16 +1,20 @@
+//----------------------------------------------
+//Assignment 1 
+//Package service 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package service;
 
-import java.io.IOException;
-
 import Client.client;
+import Persistence.*;
 import Travel.Accomodation;
 import Travel.Transportation;
 import Travel.Trip;
 import exceptions.DuplicateEmailException;
+import exceptions.EntityNotFoundException;
 import exceptions.InvalidClientDataException;
 import exceptions.InvalidTripDataException;
-import exceptions.EntityNotFoundException;
-import Persistence.*;
+import java.io.IOException;
 
 
 public class SmartTravelService {
@@ -141,47 +145,48 @@ public class SmartTravelService {
         for (int i = 0; i < clArr.length; i++) {
             if (clArr[i] != null && clArr[i].getClientID().equalsIgnoreCase(clientID)) {
                 temp = clArr[i];
-            }else{
-                temp = null;
-                System.out.println("Client not found");
+                break;
             }
         }
         return temp;
     }
 
     
-    public  void loadAllData() throws IOException{
+    public  void loadAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException{
         try{
             //load clients from file 
-            ClientFileManager.loadClients(clArr, "clients.csv");
-            //load trips from file
-            TripFileManager.loadTrips(tripArr, "trips.csv", clArr, transArr, accomArr);
+            ClientFileManager.loadClients(clArr, "output/data/clients.csv");
+             //load accomodation from file
+            AccommodationFileManager.loadAccomodation(accomArr, "output/data/accommodations.csv");
             //load transportation from file
-            TransportationFileManager.loadTransportations(transArr, "transportations.csv");
-            //load accomodation from file
-            AccommodationFileManager.loadAccomodation(accomArr, "accomodations.csv");
+            TransportationFileManager.loadTransportations(transArr, "output/data/transports.csv");
+            //load trips from file
+            TripFileManager.loadTrips(tripArr, "output/data/trips.csv", clArr, transArr, accomArr);
+            
+           
         }catch (Exception e){
-            System.out.println("Error loading data: " + e.getMessage());    
+            System.out.println("Error loading data: " + e.getMessage() + " from file " + e.getStackTrace()[0].getFileName());    
+           ErrorLogger.log("Error loading data: " + e.getMessage());
         }
     }
 
-    public void saveAllData() throws IOException{
+    public void saveAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException{
 
         try{
             // save clients       
-            ClientFileManager.saveClients(clArr, 0, "clients.csv");
-                    
-            // save trips 
-            TripFileManager.saveTrips(tripArr, 0, "trips.csv");
-
+            ClientFileManager.saveClients(clArr, 0, "output/data/clients.csv");
+        
             // save transportation
-            TransportationFileManager.saveTransportations(transArr, 0, "transportations.csv");
+            TransportationFileManager.saveTransportations(transArr, 0, "output/data/transports.csv");
 
             // save accomodation
-            AccommodationFileManager.saveAccomodations(accomArr, 0, "accomodations.csv");
+            AccommodationFileManager.saveAccomodations(accomArr, 0, "output/data/accommodations.csv");
+            // save trips 
+            TripFileManager.saveTrips(tripArr, 0, "output/data/trips.csv");
 
         }catch (Exception e){
             System.out.println("Error saving data: " + e.getMessage());
+            ErrorLogger.log("Error saving data: " + e.getMessage());
         }
     }
 
@@ -215,13 +220,15 @@ public class SmartTravelService {
         return totalSpent;
     }
 
-    public void listAllData(){
+    public String listAllData(){
+        String list = "";
         for (int i = 0; i<tripArr.length;i++){
             if (tripArr[i] != null){
-                System.out.println(TripFileManager.tripToCSV(tripArr[i]));
-                
+               list += "" + TripFileManager.tripToCSV(tripArr[i]) + "\n";
+
             }
         }
+        return list;
     }
 
 }

@@ -1,10 +1,17 @@
+//----------------------------------------------
+//Assignment 1 
+//Package Persistence 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package Persistence;
 import Client.client;
+import exceptions.DuplicateEmailException;
+import exceptions.InvalidClientDataException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.util.Scanner;
 
 public class ClientFileManager  {
     private static client[] clientArray;
@@ -16,14 +23,14 @@ public class ClientFileManager  {
 
     // save clients to a file 
     public static void saveClients(client[] clients, int clientCount, String filePath) throws IOException{
-        clientArray = clients.clone();
+        client [] saveArray = clients.clone();
         ClientFileManager.clientCount = clientCount;
 
         try {
             PrintWriter out = new PrintWriter(new FileWriter(filePath,true));
             for (int i = 0; i<clients.length;i++){
-                if (clientArray[i] != null) {
-                    out.println(clientToCSV(clientArray[i]));
+                if (saveArray[i] != null) {
+                    out.println(clientToCSV(saveArray[i]));
                     clientCount++;
                 }
             }
@@ -35,8 +42,8 @@ public class ClientFileManager  {
     }
 
     //LOADS CLIENDS FROM A TILE 
-    public static int loadClients(client[] clients, String filePath) throws IOException {
-        clientArray = clients.clone();
+    public static int loadClients(client[] clients, String filePath) throws IOException, InvalidClientDataException, DuplicateEmailException {
+        clientArray = clients;
         int count = 0;
         if (clientArray == null) {
            count = 0; // default size
@@ -50,24 +57,28 @@ public class ClientFileManager  {
         }
 
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine(); 
-            while(line!=null){
+            Scanner reader = new Scanner (new FileReader(filePath));
+            while(reader.hasNextLine()){
+                String line = reader.nextLine();
                 try {
                     String [] parts = line.split(";");
+                    
                     if (parts.length!=4){
-                        ErrorLogger.log("Invalid Line");
+                        ErrorLogger.log("Invalid Line for client: " + line);
+                        break;
                     } 
                     clientArray[count] = new client(parts[1],parts[2],parts[3],clientArray);
                     count++;
                 } catch (Exception e) {
                     ErrorLogger.log("Error parsing line " + line + ": " + e.getMessage());
+                    continue;
                 }
             }
                 reader.close();
             
         } catch (Exception e) {
             ErrorLogger.log("Error loading clients: " + e.getMessage());
+            
         }
         return count; 
     }

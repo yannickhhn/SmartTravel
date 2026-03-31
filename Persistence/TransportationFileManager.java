@@ -1,14 +1,18 @@
+//----------------------------------------------
+//Assignment 1 
+//Package Persistence 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package Persistence;
-import Travel.Transportation;
-import java.io.IOException;
+import Travel.Bus;
 import Travel.Flight;
 import Travel.Train;
-import Travel.Bus;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
+import Travel.Transportation;
 import java.io.FileReader;
-import Persistence.ErrorLogger;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class TransportationFileManager {
     private static Transportation[] transportationList;
@@ -31,7 +35,7 @@ public class TransportationFileManager {
 
     //save into file bruh kill me 
     public static void saveTransportations(Transportation[] transportations, int TransCount, String filePath) throws IOException {
-        transportationList = transportations.clone();
+        transportationList = transportations;
 
         try {
             PrintWriter out = new PrintWriter(new FileWriter(filePath,true));
@@ -49,7 +53,7 @@ public class TransportationFileManager {
 
     //load from file 
     public static int loadTransportations(Transportation[] transportations, String filePath) throws IOException {
-        transportationList = transportations.clone();
+        transportationList = transportations;
         int count = 0;
         if (transportationList == null) {
            count = 0; // default size
@@ -63,43 +67,53 @@ public class TransportationFileManager {
         }
 
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine(); 
-            while(line!=null){
+            Scanner reader = new Scanner(new FileReader(filePath));
+
+            while(reader.hasNextLine()){
+                String line = reader.nextLine();
                 try {
                     String [] parts = line.split(";");
-                    if (parts.length!=7 && parts.length!=8){
-                        ErrorLogger.log("Invalid Line");
+                    if (parts.length!=7){
+                        ErrorLogger.log("Invalid Line for transportation: " + line);
                     } else {
                         String type = parts[0];
+                        String transportID = parts[1];
                         String companyName = parts[2];
                         String depCity = parts[3];
                         String aCity = parts[4];
                         double baseFare = Double.parseDouble(parts[5]);
 
-                        if (type.equalsIgnoreCase("FLIGHT") && parts.length == 7) {
-                            float luggage = Float.parseFloat(parts[6]);
-                            transportationList[count] = new Flight(companyName, depCity, aCity, luggage);
-                            transportationList[count].setBaseFare(baseFare);
-                            count++;
-                        } else if (type.equalsIgnoreCase("TRAIN") && parts.length == 8) {
-                            String trainType = parts[6];
-                            String seatClass = parts[7];
-                            transportationList[count] = new Train(companyName, depCity, aCity, trainType, seatClass);
-                            transportationList[count].setBaseFare(baseFare);
-                            count++;
-                        } else if (type.equalsIgnoreCase("BUS") && parts.length == 7) {
-                            int stopNumber = Integer.parseInt(parts[6]);
-                            transportationList[count] = new Bus(companyName, depCity, aCity, stopNumber);
-                            transportationList[count].setBaseFare(baseFare);
-                            count++;
-                        } else {
-                            ErrorLogger.log("Invalid Line");
+                         if (!transportID.contains("TR3") || transportID.length() < 6) {
+                            ErrorLogger.log("Invalid TransportID format  " + line + ": " + transportID);
+                            continue;
+                        } else{
+
+                            if (type.equalsIgnoreCase("FLIGHT") ) {
+                                float luggage = Float.parseFloat(parts[6]);
+                                transportationList[count] = new Flight(companyName, depCity, aCity, luggage);
+                                transportationList[count].setBaseFare(baseFare);
+                                count++;
+                            } else if (type.equalsIgnoreCase("TRAIN") ) {
+                                String trainType = parts[6];
+                                String seatClass = "Economy";
+                                transportationList[count] = new Train(companyName, depCity, aCity, trainType, seatClass);
+                                transportationList[count].setBaseFare(baseFare);
+                                count++;
+                            } else if (type.equalsIgnoreCase("BUS")) {
+                                int stopNumber = Integer.parseInt(parts[6]);
+                                transportationList[count] = new Bus(companyName, depCity, aCity, stopNumber);
+                                transportationList[count].setBaseFare(baseFare);
+                                count++;
+                            } else {
+                                ErrorLogger.log("Invalid Transportation type : " + line);
+                                continue;
+                            }
                         }
                     }
                 
                 } catch (Exception e) {
-                    ErrorLogger.log("Error parsing line: " + e.getMessage());
+                    ErrorLogger.log("Error parsing line: " + e.getMessage() + " - " + e.getStackTrace()[0].getFileName());
+                    continue;
                 }
                 
             }

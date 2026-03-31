@@ -1,3 +1,8 @@
+//----------------------------------------------
+//Assignment 1 
+//Package visualization 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package visualization;
 
 import java.awt.BasicStroke;
@@ -85,9 +90,11 @@ public class TripChartGenerator {
      * @param count number of valid elements in the array
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateCostBarChart(Trip[] trips, int count) throws IOException {
+    public static void generateCostBarChart(Trip[] trips) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 0; i < count; i++) {
+        
+
+        for (int i = 0; i < trips.length && trips[i] != null; i++) {
             dataset.addValue(trips[i].calculateTotalCost(), "Total Cost", trips[i].getTripID());
         }
 
@@ -99,7 +106,13 @@ public class TripChartGenerator {
         );
         
         applyChartStyling(chart);
-        ChartUtils.saveChartAsPNG(new File("output/trip_cost_bar_chart.png"), chart, 800, 600);
+        
+        // Auto-scale the Y-axis to fit all data values
+        CategoryPlot plot = chart.getCategoryPlot();
+        ValueAxis rangeAxis = plot.getRangeAxis();
+        rangeAxis.setAutoRange(true);
+        
+        ChartUtils.saveChartAsPNG(new File("output/charts/trip_cost_bar_chart.png"), chart, 800, 600);
     }
 
     /**
@@ -109,12 +122,12 @@ public class TripChartGenerator {
      * @param count number of valid elements in the array
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateDestinationPieChart(Trip[] trips, int count) throws IOException {
+    public static void generateDestinationPieChart(Trip[] trips) throws IOException {
         
     	DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
 
         // Count trips per destination
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < trips.length && trips[i] != null; i++) {
             String destination = trips[i].getDestination();
             if (dataset.getIndex(destination) != -1) {
                 double value = dataset.getValue(destination).doubleValue();
@@ -132,7 +145,7 @@ public class TripChartGenerator {
                 false
         );
         applyChartStyling(chart);
-        ChartUtils.saveChartAsPNG(new File("output/trips_per_destination_pie.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("output/charts/trips_per_destination_pie.png"), chart, 800, 600);
     }
 
     /**
@@ -142,8 +155,12 @@ public class TripChartGenerator {
      * @param count number of valid elements in the array
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateDurationLineChart(Trip[] trips, int count) throws IOException {
+    public static void generateDurationLineChart(Trip[] trips) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        int count = 0;
+        for (int i = 0; i < trips.length && trips[i] != null; i++) {
+            count++;
+        }
         for (int i = 0; i < count; i++) {
             dataset.addValue(trips[i].getDuration(), "Duration (days)", trips[i].getTripID());
         }
@@ -163,6 +180,6 @@ public class TripChartGenerator {
         renderer.setSeriesShapesVisible(0, true);
         renderer.setSeriesShapesFilled(0, true);
         
-        ChartUtils.saveChartAsPNG(new File("output/trip_duration_line_chart.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("output/charts/trip_duration_line_chart.png"), chart, 800, 600);
     }
 }

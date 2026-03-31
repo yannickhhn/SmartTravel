@@ -1,3 +1,8 @@
+//----------------------------------------------
+//Assignment 1 
+//Package Travel 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package Travel;
 
 import Client.client;
@@ -149,7 +154,10 @@ public class Trip {
 	
 
 	public double calculateTotalCost() {
-		return this.duration*this.basePrice + this.transportation.calculateCost((int)this.duration) + this.accomodation.calculateCost((int)this.duration);
+		double transportationCost = (this.transportation != null) ? this.transportation.calculateCost((int)this.duration) : 0;
+		double accomodationCost = (this.accomodation != null) ? this.accomodation.calculateCost((int)this.duration) : 0;
+		
+		return this.duration*this.basePrice + transportationCost + accomodationCost;
 	}
 
 	

@@ -95,6 +95,7 @@ public class client {
 		}
 		this.email = e;
 	}
+	
 
 	
 	//To string method 

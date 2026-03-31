@@ -1,14 +1,17 @@
+//----------------------------------------------
+//Assignment 1 
+//Package Persistence 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package Persistence;
 import Travel.Accomodation;
+import Travel.Hostel;
+import Travel.Hotel;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import Travel.Hostel;
-import Travel.Hotel;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import Persistence.ErrorLogger;
-import Travel.Accomodation;
+import java.util.Scanner;
 
 public class AccommodationFileManager {
     private static Accomodation[] accomodationArray;
@@ -29,7 +32,7 @@ public class AccommodationFileManager {
 
     // method to save accomodation array to file
     public static void saveAccomodations(Accomodation[] accomodation, int accommodationCount, String filePath) throws IOException {
-       accomodationArray = accomodation.clone();
+       accomodationArray = accomodation;
        AccommodationFileManager.accommodationCount = accommodationCount;
 
         try {
@@ -49,7 +52,7 @@ public class AccommodationFileManager {
 
     //method to load accomodation from file
     public static int loadAccomodation(Accomodation[] accomodation, String filePath) throws IOException {
-        accomodationArray = accomodation.clone();
+        accomodationArray = accomodation;
         int count = 0;
         if (accomodationArray == null) {
            count = 0; // default size
@@ -62,26 +65,29 @@ public class AccommodationFileManager {
             }
         }
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine(); 
-            while(line!=null){
+            Scanner reader = new Scanner(new FileReader(filePath));
+            
+            while(reader.hasNextLine()){
+                String line = reader.nextLine(); 
                 try {
                     String [] parts = line.split(";");
 
                     if (parts.length!=6){
-                        ErrorLogger.log("Invalid Line");
+                        ErrorLogger.log("Invalid Line for accomodation: " + line);
+                        continue;
                     }
 
                     if (parts[0].equalsIgnoreCase("HOTEL")){
-                        accomodationArray[count] = new Hotel(parts[2],parts[3],Integer.parseInt(parts[4]),Double.parseDouble(parts[5]),Float.parseFloat(parts[5]));
+                        accomodationArray[count] = new Hotel(parts[2],parts[3],1,Double.parseDouble(parts[4]),Float.parseFloat(parts[5]));
                         count++;
                     } else if (parts[0].equalsIgnoreCase("HOSTEL")){
-                        accomodationArray[count] = new Hostel(parts[2],parts[3],Integer.parseInt(parts[4]),Double.parseDouble(parts[5]),Float.parseFloat(parts[5]));
+                        accomodationArray[count] = new Hostel(parts[2],parts[3],1,Double.parseDouble(parts[4]),Float.parseFloat(parts[5]));
                         count++;
                     }
                     
                 } catch (Exception e) {
                     ErrorLogger.log("Error parsing line: " + line + " - " + e.getMessage());
+                    continue;
                 }
             }
             reader.close();

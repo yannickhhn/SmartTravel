@@ -1,9 +1,14 @@
+//----------------------------------------------
+//Assignment 1 
+//Package Travel 
+//Written by Hantaniaina Yannick H.N 40306516
+//----------------------------------------------
 package Travel;
 
 import exceptions.InvalidAccommodationDataException;
 
 public abstract class Accomodation {
-	protected static int numId = 4001;
+	protected static int numId = 4000;
 	protected  String accId;
 	private String AccomodationName, location;
 	private double price;
