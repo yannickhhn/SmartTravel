@@ -4,9 +4,12 @@
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 package Travel;
+import Persistence.ErrorLogger;
 import exceptions.InvalidTransportDataException;
+import interfaces.CsvPersistable;
+import interfaces.Identifiable;
 
-public abstract class Transportation {
+public abstract class Transportation implements Identifiable, CsvPersistable, Comparable<Transportation> {
 	protected static int numId = 3000;
 	protected String transportID;
 	private String companyName,depCity,aCity;
@@ -82,6 +85,13 @@ public abstract class Transportation {
 
 	 
 	//methods 
+	//interface method
+	@Override
+	public String getID() {
+		return this.transportID;
+	}
+
+	//class methods 
 	@Override
 	public String toString(){
 		return "Company Name: " + this.getCompanyName()+"\n"
@@ -123,6 +133,67 @@ public abstract class Transportation {
 				copy[i] = null;
 		}
 		return copy;
+	}
+
+	// method to convert transportation to csv format
+	@Override
+	public String toCsvRow() {
+		 if (this instanceof Flight){
+			Flight f = (Flight) this;
+            return "FLIGHT;" + f.getID() + ";" + f.getCompanyName() + ";" + f.getDepCity() + ";" + f.getACity() + ";" + f.getBaseFare() + ";" + f.getLuggage();
+        } else if (this instanceof Train){
+            Train tr = (Train) this;
+            return "TRAIN;" + tr.getID() + ";" + tr.getCompanyName() + ";" + tr.getDepCity() + ";" + tr.getACity() + ";" + tr.getBaseFare() + ";" + tr.getTrainType() + ";" + tr.getSeatClass();
+        } else if (this instanceof Bus ){
+			Bus b = (Bus) this;
+            return "BUS;" + b.getID() + ";" + b.getCompanyName() + ";" + b.getDepCity() + ";" + b.getACity() + ";" + b.getBaseFare() + ";" + b.getStopNumber();
+        } else {
+            return "";
+        }
+	}
+
+	// Comparable interface method - sort by base price descending (premium transport first)
+	@Override
+	public int compareTo(Transportation other) {
+		return Double.compare(other.price, this.price);
+	}
+
+	public static Transportation fromCsvRow(String csvRow) throws InvalidTransportDataException {
+		String[] parts = csvRow.split(";");
+		if (parts.length !=7) {
+			throw new InvalidTransportDataException("Invalid CSV row for transportation: " + csvRow);
+		}
+		String type = parts[0];
+		String id = parts[1];
+		String companyName = parts[2];
+		String depCity = parts[3];
+		String aCity = parts[4];
+		double baseFare = Double.parseDouble(parts[5]);
+
+		if (!id.contains("TR3") || id.length() < 6) {
+			ErrorLogger.log("Invalid TransportID format: " + id);
+			throw new InvalidTransportDataException("Invalid TransportID format: " + id);
+		}	
+
+		switch (type.toUpperCase()) {
+			case "FLIGHT":
+				Flight flight = new Flight(companyName, depCity, aCity,  Float.parseFloat(parts[6]));
+				flight.setBaseFare(baseFare);
+				return flight;
+
+			case "TRAIN":
+				Train train = new Train(companyName, depCity, aCity,  parts[6],"Economy");
+				train.setBaseFare(baseFare);
+				return train;
+
+			case "BUS":
+				Bus bus = new Bus(companyName, depCity, aCity, Integer.parseInt(parts[6]));
+				bus.setBaseFare(baseFare);
+				return bus;
+
+			default:
+				throw new InvalidTransportDataException("Unknown transportation type: " + type);
+		}
 	}
 }
 

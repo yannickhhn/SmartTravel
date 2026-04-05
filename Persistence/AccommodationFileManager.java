@@ -16,17 +16,7 @@ import java.util.Scanner;
 
 public class AccommodationFileManager {
 
-    public static String accomodationToCSV(Accomodation a){
-        if (a instanceof Hotel){
-            Hotel h = (Hotel) a;
-            return "HOTEL;" + h.getAccomodationID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getRating();
-        } else if (a instanceof Hostel){
-            Hostel h = (Hostel) a;
-            return "HOSTEL;" + h.getAccomodationID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getBed();
-        } else {
-            return "";
-        }
-    }
+   
 
     // save accommodations to file
     public static void saveAccomodations(List<Accomodation> accommodations, int accommodationCount, String filePath) throws IOException {
@@ -34,7 +24,7 @@ public class AccommodationFileManager {
             PrintWriter out = new PrintWriter(new FileWriter(filePath, true));
             for (Accomodation a : accommodations) {
                 if (a != null) {
-                    out.println(accomodationToCSV(a));
+                    out.println(a.toCsvRow());
                 }
             }
             out.close();

@@ -7,11 +7,14 @@ package Travel;
 
 import Client.client;
 import exceptions.InvalidTripDataException;
+import interfaces.Billable;
+import interfaces.Identifiable;
 import java.util.List;
 import java.util.LinkedList;
+import interfaces.CsvPersistable;
 
 
-public class Trip {
+public class Trip implements Identifiable, Billable, CsvPersistable, Comparable<Trip> {
 	private static int numId = 2000;
 	private final String tripID;
 	private String destination;
@@ -33,7 +36,7 @@ public class Trip {
 		boolean clientFound = false;
 
 		for (client c : clientArray){
-			if (c != null && c.getClientID().equalsIgnoreCase(client.getClientID())){
+			if (c != null && c.getID().equalsIgnoreCase(client.getID())){
 				clientFound = true;
 				break;
 			}
@@ -78,9 +81,12 @@ public class Trip {
 	public double getDuration(){
 		return this.duration;
 	}
-	public double getBasePrice(){
-		return this.basePrice;
-	}
+
+	// this is supposed to be the getter for base price but the interface implements the same method so idk 
+		/*public double getBasePrice(){
+			return this.basePrice;
+		}*/
+
 	public client getClient(){
 		client temp = this.client;
 		return temp;
@@ -115,7 +121,7 @@ public class Trip {
 		boolean clientFound = false;
 
 		for (client c : clientArray){
-			if (c != null && c.getClientID().equalsIgnoreCase(cl.getClientID())){
+				if (c != null && c.getID().equalsIgnoreCase(cl.getID())){
 				clientFound = true;
 				break;
 			}
@@ -133,6 +139,8 @@ public class Trip {
 		this.accomodation = a;
 	}
 
+
+	//Methods
 	// toString Method 
 	@Override
 	public String toString(){
@@ -154,7 +162,7 @@ public class Trip {
 			& this.client.equals(a.client);
 	}
 	
-
+	// calculate total cost method
 	public double calculateTotalCost() {
 		double transportationCost = (this.transportation != null) ? this.transportation.calculateCost((int)this.duration) : 0;
 		double accomodationCost = (this.accomodation != null) ? this.accomodation.calculateCost((int)this.duration) : 0;
@@ -162,6 +170,113 @@ public class Trip {
 		return this.duration*this.basePrice + transportationCost + accomodationCost;
 	}
 
-	
 
+	//Interface methods 
+	//Identifiable interface method
+	@Override
+	public String getID() {
+		return this.tripID;
+	}
+
+	//Billable interface method
+	@Override
+	public double getBasePrice() {
+		return this.basePrice;
+	}
+
+	@Override
+	public double getTotalCost() {
+		return calculateTotalCost();
+	}
+
+	//CsvPersistable interface method
+	@Override
+	public String toCsvRow() {
+		String accommodationId = this.accomodation == null ? "" : this.accomodation.getID();
+        String transportationId = this.transportation == null ? "" : this.transportation.getID();
+
+        return this.getID() + ";"
+                + this.client.getID() + ";"
+                + accommodationId + ";"
+                + transportationId + ";"
+                + this.destination + ";"
+                + this.duration + ";"
+                + this.basePrice;
+	}
+
+	// Comparable interface method - sort by total cost descending (highest revenue trips first)
+	@Override
+	public int compareTo(Trip other) {
+		return Double.compare(other.calculateTotalCost(), this.calculateTotalCost());
+	}
+
+	public static Trip fromCsvRow(String csvRow, List<client> clients, List<Transportation> transportations, List<Accomodation> accomodations) throws InvalidTripDataException {
+		String[] parts = csvRow.split(";");
+		if (parts.length != 7) {
+			throw new InvalidTripDataException("Invalid CSV format for Trip: " + csvRow);
+		}
+
+		String clientID = parts[1];
+		String accommodationID = parts[2];
+		String transportationID = parts[3];
+		String destination = parts[4];
+		double duration = Double.parseDouble(parts[5]);
+		double basePrice = Double.parseDouble(parts[6]);
+
+		// Validate client ID is present
+		if (clientID == null || clientID.isEmpty()) {
+			throw new InvalidTripDataException("ClientID is mandatory");
+		}
+
+		// Find client
+		client resolvedClient = findClientById(clients, clientID);
+		if (resolvedClient == null) {
+			throw new InvalidTripDataException("ClientID not found: " + clientID);
+		}
+
+		// Find accommodation if present
+		Accomodation resolvedAccommodation = null;
+		if (accommodationID != null && !accommodationID.isEmpty()) {
+			resolvedAccommodation = findAccommodationById(accomodations, accommodationID);
+			if (resolvedAccommodation == null) {
+				throw new InvalidTripDataException("AccommodationID not found: " + accommodationID);
+			}
+		}
+
+		// Find transportation if present
+		Transportation resolvedTransportation = null;
+		if (transportationID != null && !transportationID.isEmpty()) {
+			resolvedTransportation = findTransportationById(transportations, transportationID);
+			if (resolvedTransportation == null) {
+				throw new InvalidTripDataException("TransportationID not found: " + transportationID);
+			}
+		}
+
+		return new Trip(destination, duration, basePrice, resolvedClient, resolvedTransportation, resolvedAccommodation, clients);
+	}
+
+	// Helper methods
+	private static client findClientById(List<client> clients, String id) {
+		if (clients == null || id == null || id.isEmpty()) return null;
+		for (client c : clients) {
+			if (c != null && id.equalsIgnoreCase(c.getID())) return c;
+		}
+		return null;
+	}
+
+	private static Transportation findTransportationById(List<Transportation> transportations, String id) {
+		if (transportations == null || id == null || id.isEmpty()) return null;
+		for (Transportation t : transportations) {
+			if (t != null && id.equalsIgnoreCase(t.getID())) return t;
+		}
+		return null;
+	}
+
+	private static Accomodation findAccommodationById(List<Accomodation> accomodations, String id) {
+		if (accomodations == null || id == null || id.isEmpty()) return null;
+		for (Accomodation a : accomodations) {
+			if (a != null && id.equalsIgnoreCase(a.getID())) return a;
+		}
+		return null;
+	}
 }

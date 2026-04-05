@@ -145,9 +145,9 @@ public class DashboardGenerator {
         
         for (int i = 0; i < service.getClientCount(); i++) {
             client client = service.getClient(i);
-            double spent = service.getTotalSpentOnClient(client.getClientID());
+            double spent = service.getTotalSpentOnClient(client.getID());
             out.println("                    <tr>");
-            out.println("                        <td><strong>" + client.getClientID() + "</strong></td>");
+            out.println("                        <td><strong>" + client.getID() + "</strong></td>");
             out.println("                        <td>" + client.getFName() + " " + client.getLName() + "</td>");
             out.println("                        <td>" + client.getEmail() + "</td>");
             out.println("                        <td style='font-weight: bold; color: " + 
@@ -180,8 +180,8 @@ public class DashboardGenerator {
         for (int i = 0; i < service.getTripCount(); i++) {
             Trip trip = service.getTrip(i);
             out.println("                    <tr>");
-            out.println("                        <td><strong>" + trip.getTripID() + "</strong></td>");
-            out.println("                        <td>" + trip.getClient().getClientID() + "</td>");
+            out.println("                        <td><strong>" + trip.getID() + "</strong></td>");
+            out.println("                        <td>" + trip.getClient().getID() + "</td>");
             out.println("                        <td>" + trip.getDestination() + "</td>");
             out.println("                        <td>" + trip.getDuration() + "</td>");
             out.println("                        <td>$" + String.format("%.2f", service.calculateTripTotal(i)) + "</td>");

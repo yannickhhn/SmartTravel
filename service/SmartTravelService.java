@@ -85,7 +85,7 @@ public class SmartTravelService {
     public boolean clientExists(String clientID) throws EntityNotFoundException {
         boolean found = false;
         for (int i = 0; i < clArr.size(); i++) {
-            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
+            if (clArr.get(i) != null && clArr.get(i).getID().equalsIgnoreCase(clientID)) {
                 found = true;
                 System.out.println("Client found");
                 break;
@@ -98,7 +98,7 @@ public class SmartTravelService {
 
     public client findClientByID(String clientID) throws EntityNotFoundException {
         for (int i = 0; i < clArr.size(); i++) {
-            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
+            if (clArr.get(i) != null && clArr.get(i).getID().equalsIgnoreCase(clientID)) {
                 return clArr.get(i);
             }
         }
@@ -146,7 +146,7 @@ public class SmartTravelService {
         boolean clientFound = false;
 
         for (int i = 0; i < clArr.size(); i++) {
-            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
+            if (clArr.get(i) != null && clArr.get(i).getID().equalsIgnoreCase(clientID)) {
                 clientFound = true;
                 break;
             }
@@ -157,7 +157,7 @@ public class SmartTravelService {
         }
 
         for (int i = 0; i < tripArr.size(); i++) {
-            if (tripArr.get(i) != null && tripArr.get(i).getClient().getClientID().equalsIgnoreCase(clientID)) {
+            if (tripArr.get(i) != null && tripArr.get(i).getClient().getID().equalsIgnoreCase(clientID)) {
                 totalSpent += tripArr.get(i).calculateTotalCost();
             }
         }
@@ -169,7 +169,7 @@ public class SmartTravelService {
         String list = "";
         for (int i = 0; i < tripArr.size(); i++) {
             if (tripArr.get(i) != null) {
-                list += TripFileManager.tripToCSV(tripArr.get(i)) + "\n";
+                list += tripArr.get(i).toCsvRow() + "\n";
             }
         }
         return list;

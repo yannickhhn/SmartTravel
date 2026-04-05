@@ -7,16 +7,17 @@ package Client;
 
 import exceptions.DuplicateEmailException;
 import exceptions.InvalidClientDataException;
-import Travel.Trip;
-import service.SmartTravelService;
 import java.util.List;
 import java.util.LinkedList;
+import interfaces.Identifiable;
+import interfaces.CsvPersistable;
 
-public class client {
+public class client implements Identifiable, CsvPersistable, Comparable<client> {
 
 	private static int numID = 1000;
 	private final String clientID;
 	private String fName, lName,email;
+	private double totalSpent = 0;
 	private static List<client> clientArray;
 
 
@@ -61,11 +62,14 @@ public class client {
 		this(null,null,null,clientArray);
 	}
 	
-	// methods 
-	////Accessors & Mutators
-	//////Accessors 
+	
+
+	//////Accessors
 	public String getFName() {
 		return this.fName;
+	}
+	public double getTotalSpent() {
+		return this.totalSpent;
 	}
 	public String getLName() {
 		return this.lName;
@@ -77,7 +81,11 @@ public class client {
 		return this.clientID;
 	}
 
-	/////mutators 
+	public void addToTotalSpent(double amount) {
+		this.totalSpent += amount;
+	}
+
+	/////mutators
 	public void setFName(String f) throws InvalidClientDataException {
 		if (f.length()>=50 | f.length()==0) {
 			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
@@ -118,6 +126,34 @@ public class client {
 		return b;
 	}
 
-	
+	// interface method
+	//identifiable interface method
+	@Override
+	public String getID()	{
+		return this.clientID;
+	}
+
+	//csv persistable interface method
+	@Override
+	public String toCsvRow() {
+		return this.clientID + ";" + this.fName + ";" + this.lName + ";" + this.email;
+	}
+
+	public static client fromCsvRow(String csvLine) throws InvalidClientDataException {
+		if (csvLine == null || csvLine.isBlank()) {
+			throw new InvalidClientDataException("CSV line is empty");
+		}
+		String[] parts = csvLine.split(";");
+		if (parts.length != 4) {
+			throw new InvalidClientDataException("Invalid CSV format: expected 4 fields, got " + parts.length);
+		}
+		return new client(parts[1], parts[2], parts[3], new LinkedList<>());
+	}
+
+	// comparable interface method — sort by total spent descending (most valuable clients first)
+	@Override
+	public int compareTo(client other) {
+		return Double.compare(other.totalSpent, this.totalSpent);
+	}
 
 }

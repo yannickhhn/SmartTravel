@@ -94,7 +94,7 @@ public class TripChartGenerator {
 
         for (int i = 0; i < trips.size(); i++) {
             if (trips.get(i) != null) {
-                dataset.addValue(trips.get(i).calculateTotalCost(), "Total Cost", trips.get(i).getTripID());
+                dataset.addValue(trips.get(i).calculateTotalCost(), "Total Cost", trips.get(i).getID());
             }
         }
 
@@ -158,7 +158,7 @@ public class TripChartGenerator {
 
         for (int i = 0; i < trips.size(); i++) {
             if (trips.get(i) != null) {
-                dataset.addValue(trips.get(i).getDuration(), "Duration (days)", trips.get(i).getTripID());
+                dataset.addValue(trips.get(i).getDuration(), "Duration (days)", trips.get(i).getID());
             }
         }
 

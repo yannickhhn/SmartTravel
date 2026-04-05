@@ -6,8 +6,10 @@
 package Travel;
 
 import exceptions.InvalidAccommodationDataException;
+import interfaces.CsvPersistable;
+import interfaces.Identifiable;
 
-public abstract class Accomodation {
+public abstract class Accomodation implements Identifiable, CsvPersistable, Comparable<Accomodation> {
 	protected static int numId = 4000;
 	protected  String accId;
 	private String AccomodationName, location;
@@ -135,6 +137,50 @@ public abstract class Accomodation {
 	public double calculateCost(int numberOfDays){
 		return this.price*numberOfDays;
 	}
-}
+	
+	// Identifiable interface method
+	@Override
+	public String getID() {
+		return this.accId;
+	}
 
+	// Comparable interface method - sort by price per night descending (luxury options first)
+	@Override
+	public int compareTo(Accomodation other) {
+		return Double.compare(other.getPrice(), this.getPrice());
+	}
+
+	// interface method to convert accomodation to csv format
+	@Override
+	public String toCsvRow() {
+		 if (this instanceof Hotel){
+            Hotel h = (Hotel) this;
+            return "HOTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getRating();
+        } else if (this instanceof Hostel){
+            Hostel h = (Hostel) this;
+            return "HOSTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getBed();
+        } else {
+            return "";
+        }
+	}
+
+ 
+	public static Accomodation fromCsvRow(String csvRow) throws InvalidAccommodationDataException {
+		String[] parts = csvRow.split(";");
+		if (parts.length !=6) {
+			throw new InvalidAccommodationDataException("Invalid CSV row for accommodation: " + csvRow);
+		}
+
+		switch (parts[0].toUpperCase()) {
+			case "HOTEL":
+				Hotel hotel = new Hotel(parts[2], parts[3], Integer.parseInt(parts[5]), Double.parseDouble(parts[4]), 2);
+				return hotel;
+			case "HOSTEL":
+				Hostel hostel = new Hostel(parts[2], parts[3], Integer.parseInt(parts[5]), Double.parseDouble(parts[4]), 1);
+				return hostel;
+			default:
+				throw new InvalidAccommodationDataException("Unknown accommodation type: " + parts[0]);
+		}
+	}
+}
  

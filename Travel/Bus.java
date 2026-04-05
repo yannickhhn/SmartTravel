@@ -7,7 +7,8 @@ package Travel;
 
 import exceptions.InvalidTransportDataException;
 
-public class Bus extends Transportation{
+
+public class Bus extends Transportation {
 	private int stopNumber;
 	private final double baseFare = 100.0;
 	
@@ -82,5 +83,5 @@ public class Bus extends Transportation{
 	@Override
     public double calculateCost(int numberOfDays){
         return this.calculateFare() * numberOfDays;
-    }  
+    }
 }

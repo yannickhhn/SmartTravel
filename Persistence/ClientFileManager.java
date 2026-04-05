@@ -14,11 +14,10 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class ClientFileManager {
 
-    public static String clientToCSV(client cl){
-        return cl.getClientID() + ";" + cl.getFName() + ";" + cl.getLName() + ";" + cl.getEmail();
-    }
+
 
     // save clients to a file
     public static void saveClients(List<client> clients, int clientCount, String filePath) throws IOException{
@@ -26,7 +25,7 @@ public class ClientFileManager {
             PrintWriter out = new PrintWriter(new FileWriter(filePath, true));
             for (client c : clients) {
                 if (c != null) {
-                    out.println(clientToCSV(c));
+                    out.println(c.toCsvRow());
                 }
             }
             out.close();
@@ -42,12 +41,10 @@ public class ClientFileManager {
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 try {
-                    String[] parts = line.split(";");
-                    if (parts.length != 4) {
-                        ErrorLogger.log("Invalid Line for client: " + line);
-                        continue;
+                    client c = client.fromCsvRow(line);
+                    if (c != null) {
+                        clients.add(c);
                     }
-                    clients.add(new client(parts[1], parts[2], parts[3], clients));
                 } catch (Exception e) {
                     ErrorLogger.log("Error parsing line " + line + ": " + e.getMessage());
                 }

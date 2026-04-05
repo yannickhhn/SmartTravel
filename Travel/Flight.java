@@ -7,6 +7,7 @@ package Travel;
 
 import exceptions.InvalidTransportDataException;
 
+
 public class Flight extends Transportation{
     
 	private float luggage;
@@ -85,8 +86,5 @@ public class Flight extends Transportation{
     public double calculateCost(int numberOfDays){
         return this.calculateFare() * numberOfDays;
     }   
-
-  
-
 
 }
