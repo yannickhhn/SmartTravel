@@ -7,6 +7,8 @@ package Travel;
 
 import Client.client;
 import exceptions.InvalidTripDataException;
+import java.util.List;
+import java.util.LinkedList;
 
 
 public class Trip {
@@ -18,20 +20,20 @@ public class Trip {
 	private client client;
 	private Transportation transportation;
 	private Accomodation accomodation;
-	static client[] clientArray;
+	static List<client> clientArray;
 
 
 
-	// parameterized constructor 
-	public Trip(String destination, double duration, double basePrice, client client, Transportation transportation, Accomodation accomodation, client[] clientArray) throws InvalidTripDataException {
+	// parameterized constructor
+	public Trip(String destination, double duration, double basePrice, client client, Transportation transportation, Accomodation accomodation, List<client> clientArray) throws InvalidTripDataException {
 
 		numId++;
 		this.tripID = "T"+numId;
-		clientArray = clientArray.clone();
+		Trip.clientArray = new LinkedList<>(clientArray);
 		boolean clientFound = false;
 
-		for (int i=0; i<clientArray.length; i++){
-			if (clientArray[i].getClientID().equalsIgnoreCase(client.getClientID())){
+		for (client c : clientArray){
+			if (c != null && c.getClientID().equalsIgnoreCase(client.getClientID())){
 				clientFound = true;
 				break;
 			}
@@ -112,8 +114,8 @@ public class Trip {
 	public void setClient(client cl) throws InvalidTripDataException{
 		boolean clientFound = false;
 
-		for (int i=0; i<clientArray.length; i++){
-			if (clientArray[i].getClientID().equalsIgnoreCase(cl.getClientID())){
+		for (client c : clientArray){
+			if (c != null && c.getClientID().equalsIgnoreCase(cl.getClientID())){
 				clientFound = true;
 				break;
 			}

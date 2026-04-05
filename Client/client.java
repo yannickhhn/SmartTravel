@@ -9,37 +9,38 @@ import exceptions.DuplicateEmailException;
 import exceptions.InvalidClientDataException;
 import Travel.Trip;
 import service.SmartTravelService;
+import java.util.List;
+import java.util.LinkedList;
 
 public class client {
-	
+
 	private static int numID = 1000;
 	private final String clientID;
 	private String fName, lName,email;
-	private static client[] clientArray;
-	
-	
-	
+	private static List<client> clientArray;
+
+
+
 	//parameterized consructor
-	public client(String f,String l, String email,client[] clients) throws InvalidClientDataException{
+	public client(String f,String l, String email, List<client> clients) throws InvalidClientDataException{
 
 		client.numID++;
 		this.clientID = "C" + numID;
-		clientArray = clients.clone();
+		clientArray = new LinkedList<>(clients);
 		if (f.length()>=50 | f.length()==0) {
 			throw new InvalidClientDataException("First Name should be between 1 and 50 characters");
-		} 
+		}
 
 		if (l.length()>=50 | l.length()==0) {
 			throw new InvalidClientDataException("Last Name should be between 1 and 50 characters");
-		} 
-		
+		}
+
 		if (email.length()>=100|!email.contains("@")|!email.contains(".")|email.contains(" ")){
 			throw new InvalidClientDataException("Invalid email format");
 		}
 		if (clients != null) {
-			for (int i=0; i<clients.length; i++) {
-				
-				if (clients[i] != null && clients[i].getEmail().equalsIgnoreCase(email)) {
+			for (client c : clients) {
+				if (c != null && c.getEmail().equalsIgnoreCase(email)) {
 					throw new DuplicateEmailException("Email already exists");
 				}
 			}

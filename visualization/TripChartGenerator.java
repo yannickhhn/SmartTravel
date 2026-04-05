@@ -1,6 +1,6 @@
 //----------------------------------------------
-//Assignment 1 
-//Package visualization 
+//Assignment 1
+//Package visualization
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 package visualization;
@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
@@ -26,7 +26,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import Travel.Trip;
 
 /**
- * Utility class for generating charts from arrays of Trip objects.
+ * Utility class for generating charts from lists of Trip objects.
  * Supports Bar, Pie, and Line charts.
  */
 public class TripChartGenerator {
@@ -76,8 +76,8 @@ public class TripChartGenerator {
 	        plot.setBackgroundPaint(Color.WHITE);
 	        plot.setOutlineVisible(false);
 	        plot.setSectionOutlinesVisible(false);
-	        plot.setShadowPaint(null); // Remove default shadow
-	        plot.setLabelBackgroundPaint(new Color(245, 245, 245, 180)); // Transparent label background
+	        plot.setShadowPaint(null);
+	        plot.setLabelBackgroundPaint(new Color(245, 245, 245, 180));
 	    	
 	    }
 	}
@@ -86,16 +86,16 @@ public class TripChartGenerator {
 	/**
      * Generates a Bar chart showing total cost per trip.
      *
-     * @param trips array of Trip objects
-     * @param count number of valid elements in the array
+     * @param trips list of Trip objects
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateCostBarChart(Trip[] trips) throws IOException {
+    public static void generateCostBarChart(List<Trip> trips) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        
 
-        for (int i = 0; i < trips.length && trips[i] != null; i++) {
-            dataset.addValue(trips[i].calculateTotalCost(), "Total Cost", trips[i].getTripID());
+        for (int i = 0; i < trips.size(); i++) {
+            if (trips.get(i) != null) {
+                dataset.addValue(trips.get(i).calculateTotalCost(), "Total Cost", trips.get(i).getTripID());
+            }
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
@@ -107,33 +107,32 @@ public class TripChartGenerator {
         
         applyChartStyling(chart);
         
-        // Auto-scale the Y-axis to fit all data values
         CategoryPlot plot = chart.getCategoryPlot();
         ValueAxis rangeAxis = plot.getRangeAxis();
         rangeAxis.setAutoRange(true);
         
-        ChartUtils.saveChartAsPNG(new File("output/charts/trip_cost_bar_chart.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("A3_249/output/charts/trip_cost_bar_chart.png"), chart, 800, 600);
     }
 
     /**
      * Generates a Pie chart showing distribution of trips per destination.
      *
-     * @param trips array of Trip objects
-     * @param count number of valid elements in the array
+     * @param trips list of Trip objects
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateDestinationPieChart(Trip[] trips) throws IOException {
+    public static void generateDestinationPieChart(List<Trip> trips) throws IOException {
         
     	DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
 
-        // Count trips per destination
-        for (int i = 0; i < trips.length && trips[i] != null; i++) {
-            String destination = trips[i].getDestination();
-            if (dataset.getIndex(destination) != -1) {
-                double value = dataset.getValue(destination).doubleValue();
-                dataset.setValue(destination, value + 1);
-            } else {
-                dataset.setValue(destination, 1);
+        for (int i = 0; i < trips.size(); i++) {
+            if (trips.get(i) != null) {
+                String destination = trips.get(i).getDestination();
+                if (dataset.getIndex(destination) != -1) {
+                    double value = dataset.getValue(destination).doubleValue();
+                    dataset.setValue(destination, value + 1);
+                } else {
+                    dataset.setValue(destination, 1);
+                }
             }
         }
 
@@ -145,24 +144,22 @@ public class TripChartGenerator {
                 false
         );
         applyChartStyling(chart);
-        ChartUtils.saveChartAsPNG(new File("output/charts/trips_per_destination_pie.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("A3_249/output/charts/trips_per_destination_pie.png"), chart, 800, 600);
     }
 
     /**
      * Generates a Line chart showing trip duration over Trip IDs.
      *
-     * @param trips array of Trip objects
-     * @param count number of valid elements in the array
+     * @param trips list of Trip objects
      * @throws IOException if PNG file cannot be written
      */
-    public static void generateDurationLineChart(Trip[] trips) throws IOException {
+    public static void generateDurationLineChart(List<Trip> trips) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        int count = 0;
-        for (int i = 0; i < trips.length && trips[i] != null; i++) {
-            count++;
-        }
-        for (int i = 0; i < count; i++) {
-            dataset.addValue(trips[i].getDuration(), "Duration (days)", trips[i].getTripID());
+
+        for (int i = 0; i < trips.size(); i++) {
+            if (trips.get(i) != null) {
+                dataset.addValue(trips.get(i).getDuration(), "Duration (days)", trips.get(i).getTripID());
+            }
         }
 
         JFreeChart chart = ChartFactory.createLineChart(
@@ -180,6 +177,6 @@ public class TripChartGenerator {
         renderer.setSeriesShapesVisible(0, true);
         renderer.setSeriesShapesFilled(0, true);
         
-        ChartUtils.saveChartAsPNG(new File("output/charts/trip_duration_line_chart.png"), chart, 800, 600);
+        ChartUtils.saveChartAsPNG(new File("A3_249/output/charts/trip_duration_line_chart.png"), chart, 800, 600);
     }
 }

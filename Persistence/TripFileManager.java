@@ -1,6 +1,6 @@
 //----------------------------------------------
-//Assignment 1 
-//Package Persistence 
+//Assignment 1
+//Package Persistence
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 package Persistence;
@@ -14,10 +14,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Scanner;
 
 public class TripFileManager {
-    private static Trip[] trips;
 
     // CSV format:
     // TripID;ClientID;AccommodationID;TransportationID;Destination;DurationDays;BasePrice
@@ -34,202 +34,131 @@ public class TripFileManager {
                 + trip.getBasePrice();
     }
 
-    // method to save trip array to file  REPLACE INSTEAD OF APPENDING WHEN SAVING 
-    public static void saveTrips(Trip[] tripList, int tripCount,String filePath){
-        trips= tripList;
+    // save trips to file
+    public static void saveTrips(List<Trip> trips, int tripCount, String filePath) {
         try {
-            PrintWriter out = new PrintWriter(new FileWriter(filePath,false));
-            for (int i =0; i<tripList.length;i++){
-                if (tripList[i] != null) {
-                    out.println(tripToCSV(tripList[i]));
-                    tripCount++;
-                } 
+            PrintWriter out = new PrintWriter(new FileWriter(filePath, false));
+            for (Trip t : trips) {
+                if (t != null) {
+                    out.println(tripToCSV(t));
+                }
             }
             out.close();
-        } catch  (Exception e) {
-            
+        } catch (Exception e) {
             ErrorLogger.log("Error occurred while saving trips: " + e.getMessage());
         }
     }
 
-    // Load trips from file ///
-    public static int loadTrips(Trip[] tripList, String filePath, client[] clients,Transportation[] transportations, Accomodation[] accomodations) throws EntityNotFoundException {
-        trips = tripList;
-        int count = firstEmptyIndex(tripList);
-
-        try {
-            Scanner reader = new Scanner(new FileReader(filePath));
-            
+    // load trips from file into the list
+    public static void loadTrips(List<Trip> trips, String filePath, List<client> clients,
+                                 List<Transportation> transportations, List<Accomodation> accomodations)
+            throws EntityNotFoundException {
+        try (Scanner reader = new Scanner(new FileReader(filePath))) {
             int lineNumber = 0;
 
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 lineNumber++;
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
+                if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(";");
                 if (parts.length != 7) {
-                    ErrorLogger.log("Invalid line for Trip:  " + lineNumber + ": " + line);
+                    ErrorLogger.log("Invalid line for Trip: " + lineNumber + ": " + line);
                     continue;
                 }
 
-                String tripIdFromFile = parts[0];
-                String clientId = parts[1];
+                String clientId       = parts[1];
                 String accommodationId = parts[2];
                 String transportationId = parts[3];
-                String destination = parts[4];
-                double duration = Double.parseDouble(parts[5]);
-                double basePrice = Double.parseDouble(parts[6]);
-                
-              
+                String destination    = parts[4];
+                double duration       = Double.parseDouble(parts[5]);
+                double basePrice      = Double.parseDouble(parts[6]);
 
                 if (isMissingId(clientId)) {
                     throw new EntityNotFoundException("ClientID is mandatory (line " + lineNumber + ")");
                 }
 
-                boolean hasAccommodation = !isMissingId(accommodationId);
+                boolean hasAccommodation  = !isMissingId(accommodationId);
                 boolean hasTransportation = !isMissingId(transportationId);
-                
 
                 if (!hasAccommodation && !hasTransportation) {
                     throw new EntityNotFoundException(
-                            "At least one of AccommodationID or TransportationID is required (line " + lineNumber + ")"
-                    );
+                            "At least one of AccommodationID or TransportationID is required (line " + lineNumber + ")");
                 }
 
-                client resolvedClient = null;
                 if (!clientId.contains("C1")) {
-                    ErrorLogger.log("Invalid ClientID format  " + line + ": " + clientId);
+                    ErrorLogger.log("Invalid ClientID format " + line + ": " + clientId);
                     continue;
-                } else{
-                     resolvedClient = findClientById(clients, clientId);
-                     if (resolvedClient == null) {
-                    throw new EntityNotFoundException(
-                            "ClientID not found: " + clientId + " (line " + lineNumber + ")"
-                    );
                 }
+                client resolvedClient = findClientById(clients, clientId);
+                if (resolvedClient == null) {
+                    throw new EntityNotFoundException("ClientID not found: " + clientId + " (line " + lineNumber + ")");
                 }
-                
 
                 Accomodation resolvedAccommodation = null;
-                if (!accommodationId.contains("A40")&& hasAccommodation) {
-                    ErrorLogger.log("Invalid AccommodationID format  " + line + ": " + accommodationId);
-                    continue;
-                } else if (hasAccommodation) {
+                if (hasAccommodation) {
+                    if (!accommodationId.contains("A40")) {
+                        ErrorLogger.log("Invalid AccommodationID format " + line + ": " + accommodationId);
+                        continue;
+                    }
                     resolvedAccommodation = findAccommodationById(accomodations, accommodationId);
                     if (resolvedAccommodation == null) {
                         throw new EntityNotFoundException(
-                                "AccommodationID not found: " + accommodationId + " (line " + lineNumber + ")"
-                        );
-                        
+                                "AccommodationID not found: " + accommodationId + " (line " + lineNumber + ")");
                     }
                 }
-            
 
                 Transportation resolvedTransportation = null;
-                if (!transportationId.contains("TR30")&& hasTransportation) {
-                    ErrorLogger.log("Invalid TransportID format  " + line + ": " + transportationId);
-                    continue;
-                } else if (hasTransportation) {
-                        resolvedTransportation = findTransportationById(transportations, transportationId);
-                        if (resolvedTransportation == null) {
-                            throw new EntityNotFoundException(
-                                "TransportationID not found: " + transportationId + " (line " + lineNumber + ")"
-                                
-                            );
-                            
-                        }
+                if (hasTransportation) {
+                    if (!transportationId.contains("TR30")) {
+                        ErrorLogger.log("Invalid TransportID format " + line + ": " + transportationId);
+                        continue;
                     }
-                
-
-                if (count >= tripList.length) {
-                    ErrorLogger.log("Trip array is full. Remaining file rows cannot be loaded.");
-                    break;
+                    resolvedTransportation = findTransportationById(transportations, transportationId);
+                    if (resolvedTransportation == null) {
+                        throw new EntityNotFoundException(
+                                "TransportationID not found: " + transportationId + " (line " + lineNumber + ")");
+                    }
                 }
 
                 try {
-                    tripList[count] = new Trip(
-                            destination,
-                            duration,
-                            basePrice,
-                            resolvedClient,
-                            resolvedTransportation,
-                            resolvedAccommodation,
-                            clients
-                    );
-
-                    count++;
+                    trips.add(new Trip(destination, duration, basePrice, resolvedClient,
+                            resolvedTransportation, resolvedAccommodation, clients));
                 } catch (InvalidTripDataException e) {
                     ErrorLogger.log("Invalid trip data at line " + lineNumber + ": " + e.getMessage());
-                    continue;
                 }
             }
-            reader.close();
         } catch (IOException e) {
             ErrorLogger.log("Error occurred while loading trips: " + e.getMessage());
         }
-
-        return count;
     }
 
-    private static int firstEmptyIndex(Trip[] tripList) {
-        for (int i = 0; i < tripList.length; i++) {
-            if (tripList[i] == null) {
-                return i;
-            }
-        }
-        return tripList.length;
-    }
-
-    private static client findClientById(client[] clients, String id) {
-        if (clients == null || isMissingId(id)) {
-            return null;
-        }
-
+    private static client findClientById(List<client> clients, String id) {
+        if (clients == null || isMissingId(id)) return null;
         for (client c : clients) {
-            if (c != null && id.equalsIgnoreCase(c.getClientID())) {
-                return c;
-            }
+            if (c != null && id.equalsIgnoreCase(c.getClientID())) return c;
         }
         return null;
     }
 
-    private static Transportation findTransportationById(Transportation[] transportations, String id) {
-        if (transportations == null || isMissingId(id)) {
-            return null;
-        }
-
+    private static Transportation findTransportationById(List<Transportation> transportations, String id) {
+        if (transportations == null || isMissingId(id)) return null;
         for (Transportation t : transportations) {
-            if (t != null && id.equalsIgnoreCase(t.getTransportID())) {
-                return t;
-            }
+            if (t != null && id.equalsIgnoreCase(t.getTransportID())) return t;
         }
         return null;
     }
 
-    private static Accomodation findAccommodationById(Accomodation[] accomodations, String id) {
-        if (accomodations == null || isMissingId(id)) {
-            return null;
-        }
-
+    private static Accomodation findAccommodationById(List<Accomodation> accomodations, String id) {
+        if (accomodations == null || isMissingId(id)) return null;
         for (Accomodation a : accomodations) {
-            if (a != null && id.equalsIgnoreCase(a.getAccomodationID())) {
-                return a;
-            }
+            if (a != null && id.equalsIgnoreCase(a.getAccomodationID())) return a;
         }
         return null;
     }
 
     private static boolean isMissingId(String id) {
-        if (id == null) {
-            return true;
-        }else if ((id.length() == 0) ||  (id.equals("null") || (id.equals("-")))) {
-            return true;
-        }
-        return false;
+        return id == null || id.length() == 0 || id.equals("null") || id.equals("-");
     }
 
-    
 }

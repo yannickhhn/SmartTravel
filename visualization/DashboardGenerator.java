@@ -82,7 +82,7 @@ public class DashboardGenerator {
      * @throws IOException if HTML write fails
      */
     private static void generateHTMLDashboard(SmartTravelService service) throws IOException {
-        PrintWriter out = new PrintWriter("output/dashboard/dashboard.html");
+        PrintWriter out = new PrintWriter("A3_249/output/dashboard/dashboard.html");
         out.println("<!DOCTYPE html>");
         out.println("<html lang='en'>");
         out.println("<head>");
@@ -289,7 +289,7 @@ public class DashboardGenerator {
     private static void openInBrowser() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
-            String url = new File("output/dashboard/dashboard.html").getAbsolutePath();
+            String url = new File("A3_249/output/dashboard/dashboard.html").getAbsolutePath();
             
             ProcessBuilder pb;
             if (os.contains("win")) {
@@ -301,7 +301,7 @@ public class DashboardGenerator {
             }
             pb.start();
         } catch (IOException e) {
-            System.out.println("Open output/dashboard/dashboard.html manually in your browser");
+            System.out.println("Open A3_249/output/dashboard/dashboard.html manually in your browser");
         }
     }
     

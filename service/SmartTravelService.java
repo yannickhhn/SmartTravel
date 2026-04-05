@@ -1,6 +1,6 @@
 //----------------------------------------------
-//Assignment 1 
-//Package service 
+//Assignment 1
+//Package service
 //Written by Hantaniaina Yannick H.N 40306516
 //----------------------------------------------
 package service;
@@ -15,217 +15,161 @@ import exceptions.EntityNotFoundException;
 import exceptions.InvalidClientDataException;
 import exceptions.InvalidTripDataException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SmartTravelService {
-    client [] clArr = new client[100];
-	Trip [] tripArr = new Trip[200];
-	Transportation [] transArr = new Transportation[50];
-	Accomodation [] accomArr = new Accomodation[50];
+    List<client> clArr = new ArrayList<>();
+    List<Trip> tripArr = new ArrayList<>();
+    List<Transportation> transArr = new ArrayList<>();
+    List<Accomodation> accomArr = new ArrayList<>();
 
-    //getters for arrays 
-    public client[] getClient(){
+    // getters
+    public List<client> getClient() {
         return clArr;
     }
-    public client getClient(int i){
-        return clArr[i];
+    public client getClient(int i) {
+        return clArr.get(i);
     }
-    public Trip[] getTrips(){
+    public List<Trip> getTrips() {
         return tripArr;
     }
-    public Trip getTrip(int i){
-        return tripArr[i];
+    public Trip getTrip(int i) {
+        return tripArr.get(i);
     }
-    public Transportation[] getTransportation(){
+    public List<Transportation> getTransportation() {
         return transArr;
     }
-    public Accomodation[] getAccomodation(){
-        return accomArr;    
+    public List<Accomodation> getAccomodation() {
+        return accomArr;
     }
-    public int getClientCount(){
-        int count = 0;
-        for (int i = 0; i < clArr.length; i++) {
-            if (clArr[i] != null) {
-                count++;
-            }
-        }
-        return count;
+    public int getClientCount() {
+        return clArr.size();
     }
-    public int getTripCount(){
-        int count = 0;
-        for (int i = 0; i < tripArr.length; i++) {
-            if (tripArr[i] != null) {
-                count++;
-            }
-        }
-        return count;
+    public int getTripCount() {
+        return tripArr.size();
     }
-    
+
     public void addClient(String f, String l, String email) {
-        
-        boolean created = false;
-
-        for (int i = 0;i<clArr.length;i++){
-            if (clArr[i]==null){
-                try {
-                    clArr[i] = new client(f,l,email,clArr);
-                    created =true;
-                    System.out.println("New client information: ");
-                    System.out.println(clArr[i].toString());
-                } catch (InvalidClientDataException | DuplicateEmailException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
-                break;
-            }
-        }
-        if (created){
+        try {
+            client c = new client(f, l, email, clArr);
+            clArr.add(c);
+            System.out.println("New client information: ");
+            System.out.println(c.toString());
             System.out.println("Client added successfully.");
-        } else if (!created){
+        } catch (InvalidClientDataException | DuplicateEmailException e) {
+            System.out.println("Error: " + e.getMessage());
             System.out.println("Please try again");
         }
     }
 
+    public void deleteClient(client c) {
+        clArr.remove(c);
+        tripArr.removeIf(trip -> trip.getClient().equals(c));
+    }
 
-    public void createTrip(String clientID,String destination, double duration, double basePrice, Transportation transportation, Accomodation accomodation) {
-        boolean created = false;
-
-        for (int i = 0; i < tripArr.length; i++) {
-            if (tripArr[i] == null) {
-                try {
-                    tripArr[i] = new Trip(destination, duration, basePrice, findClientByID(clientID), transportation, accomodation, clArr);
-                    created = true;
-                    
-                } catch (InvalidTripDataException | EntityNotFoundException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
-                break;
-            }
-        }
-        for (int i = 0 ; i<transArr.length;i++){
-            if (transArr[i] == null && transportation != null){
-                transArr[i] = transportation;
-                break;
-            }
-        }
-        for (int i = 0 ; i<accomArr.length;i++){
-            if (accomArr[i] == null && accomodation != null){
-                accomArr[i] = accomodation;
-                break;
-            }
-        }
-
-        if (created) {
+    public void createTrip(String clientID, String destination, double duration, double basePrice, Transportation transportation, Accomodation accomodation) {
+        try {
+            Trip trip = new Trip(destination, duration, basePrice, findClientByID(clientID), transportation, accomodation, clArr);
+            tripArr.add(trip);
             System.out.println("Trip created successfully.");
-        } else if (!created) {
+        } catch (InvalidTripDataException | EntityNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
             System.out.println("Please try again");
         }
-        
+        if (transportation != null) transArr.add(transportation);
+        if (accomodation != null) accomArr.add(accomodation);
     }
 
-    public boolean clientExists(String clientID) throws EntityNotFoundException{
-
+    public boolean clientExists(String clientID) throws EntityNotFoundException {
         boolean found = false;
-        for (int i = 0; i < clArr.length; i++) {
-            if (clArr[i] != null && clArr[i].getClientID().equalsIgnoreCase(clientID)) {
+        for (int i = 0; i < clArr.size(); i++) {
+            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
                 found = true;
                 System.out.println("Client found");
                 break;
-            }else{
+            } else {
                 throw new EntityNotFoundException("Client Not Found");
             }
         }
-
         return found;
     }
 
-    public client findClientByID(String clientID) throws EntityNotFoundException{
-        client temp = null; 
-
-
-        for (int i = 0; i < clArr.length; i++) {
-            if (clArr[i] != null && clArr[i].getClientID().equalsIgnoreCase(clientID)) {
-                temp = clArr[i];
-                break;
+    public client findClientByID(String clientID) throws EntityNotFoundException {
+        for (int i = 0; i < clArr.size(); i++) {
+            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
+                return clArr.get(i);
             }
         }
-        return temp;
+        return null;
     }
 
-    
-    public  void loadAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException{
-        try{
-            //load clients from file 
-            ClientFileManager.loadClients(clArr, "output/data/clients.csv");
-             //load accomodation from file
-            AccommodationFileManager.loadAccomodation(accomArr, "output/data/accommodations.csv");
-            //load transportation from file
-            TransportationFileManager.loadTransportations(transArr, "output/data/transports.csv");
-            //load trips from file
-            TripFileManager.loadTrips(tripArr, "output/data/trips.csv", clArr, transArr, accomArr);
-            
-           
-        }catch (Exception e){
-            System.out.println("Error loading data: " + e.getMessage() + " from file " + e.getStackTrace()[0].getFileName());    
-           ErrorLogger.log("Error loading data: " + e.getMessage());
+    public void loadAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
+        try {
+            clArr.clear();
+            ClientFileManager.loadClients(clArr, "A3_249/output/data/clients.csv");
+
+            accomArr.clear();
+            AccommodationFileManager.loadAccomodation(accomArr, "A3_249/output/data/accommodations.csv");
+
+            transArr.clear();
+            TransportationFileManager.loadTransportations(transArr, "A3_249/output/data/transports.csv");
+
+            tripArr.clear();
+            TripFileManager.loadTrips(tripArr, "A3_249/output/data/trips.csv", clArr, transArr, accomArr);
+
+        } catch (Exception e) {
+            System.out.println("Error loading data: " + e.getMessage() + " from file " + e.getStackTrace()[0].getFileName());
+            ErrorLogger.log("Error loading data: " + e.getMessage());
         }
     }
 
-    public void saveAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException{
-
-        try{
-            // save clients       
-            ClientFileManager.saveClients(clArr, 0, "output/data/clients.csv");
-        
-            // save transportation
-            TransportationFileManager.saveTransportations(transArr, 0, "output/data/transports.csv");
-
-            // save accomodation
-            AccommodationFileManager.saveAccomodations(accomArr, 0, "output/data/accommodations.csv");
-            // save trips 
-            TripFileManager.saveTrips(tripArr, 0, "output/data/trips.csv");
-
-        }catch (Exception e){
+    public void saveAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
+        try {
+            ClientFileManager.saveClients(clArr, 0, "A3_249/output/data/clients.csv");
+            TransportationFileManager.saveTransportations(transArr, 0, "A3_249/output/data/transports.csv");
+            AccommodationFileManager.saveAccomodations(accomArr, 0, "A3_249/output/data/accommodations.csv");
+            TripFileManager.saveTrips(tripArr, 0, "A3_249/output/data/trips.csv");
+        } catch (Exception e) {
             System.out.println("Error saving data: " + e.getMessage());
             ErrorLogger.log("Error saving data: " + e.getMessage());
         }
     }
 
-    public double calculateTripTotal(int index){
-        return tripArr[index].calculateTotalCost();
+    public double calculateTripTotal(int index) {
+        return tripArr.get(index).calculateTotalCost();
     }
 
     public double getTotalSpentOnClient(String clientID) throws EntityNotFoundException {
         double totalSpent = 0;
         boolean clientFound = false;
-        
-        // Verify client exists
-        for (int i = 0; i < clArr.length; i++) {
-            if (clArr[i] != null && clArr[i].getClientID().equalsIgnoreCase(clientID)) {
+
+        for (int i = 0; i < clArr.size(); i++) {
+            if (clArr.get(i) != null && clArr.get(i).getClientID().equalsIgnoreCase(clientID)) {
                 clientFound = true;
                 break;
             }
         }
-        
+
         if (!clientFound) {
             throw new EntityNotFoundException("Client not found");
         }
-        
-        // Sum costs of all trips for this client
-        for (int i = 0; i < tripArr.length; i++) {
-            if (tripArr[i] != null && tripArr[i].getClient().getClientID().equalsIgnoreCase(clientID)) {
-                totalSpent += tripArr[i].calculateTotalCost();
+
+        for (int i = 0; i < tripArr.size(); i++) {
+            if (tripArr.get(i) != null && tripArr.get(i).getClient().getClientID().equalsIgnoreCase(clientID)) {
+                totalSpent += tripArr.get(i).calculateTotalCost();
             }
         }
-        
+
         return totalSpent;
     }
 
-    public String listAllData(){
+    public String listAllData() {
         String list = "";
-        for (int i = 0; i<tripArr.length;i++){
-            if (tripArr[i] != null){
-               list += "" + TripFileManager.tripToCSV(tripArr[i]) + "\n";
-
+        for (int i = 0; i < tripArr.size(); i++) {
+            if (tripArr.get(i) != null) {
+                list += TripFileManager.tripToCSV(tripArr.get(i)) + "\n";
             }
         }
         return list;
