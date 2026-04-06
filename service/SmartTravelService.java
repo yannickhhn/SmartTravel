@@ -108,16 +108,16 @@ public class SmartTravelService {
     public void loadAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
         try {
             clArr.clear();
-            ClientFileManager.loadClients(clArr, "A3_249/output/data/clients.csv");
+            clArr.addAll(GenericFileManager.load("A3_249/output/data/clients.csv", client.class));
 
             accomArr.clear();
-            AccommodationFileManager.loadAccomodation(accomArr, "A3_249/output/data/accommodations.csv");
+            accomArr.addAll(GenericFileManager.load("A3_249/output/data/accommodations.csv", Accomodation.class));
 
             transArr.clear();
-            TransportationFileManager.loadTransportations(transArr, "A3_249/output/data/transports.csv");
+            transArr.addAll(GenericFileManager.load("A3_249/output/data/transports.csv", Transportation.class));
 
-            tripArr.clear();
-            TripFileManager.loadTrips(tripArr, "A3_249/output/data/trips.csv", clArr, transArr, accomArr);
+            
+            tripArr.addAll(GenericFileManager.load("A3_249/output/data/trips.csv", Trip.class, clArr, transArr, accomArr));
 
         } catch (Exception e) {
             System.out.println("Error loading data: " + e.getMessage() + " from file " + e.getStackTrace()[0].getFileName());
@@ -127,10 +127,10 @@ public class SmartTravelService {
 
     public void saveAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
         try {
-            ClientFileManager.saveClients(clArr, 0, "A3_249/output/data/clients.csv");
-            TransportationFileManager.saveTransportations(transArr, 0, "A3_249/output/data/transports.csv");
-            AccommodationFileManager.saveAccomodations(accomArr, 0, "A3_249/output/data/accommodations.csv");
-            TripFileManager.saveTrips(tripArr, 0, "A3_249/output/data/trips.csv");
+            GenericFileManager.save(clArr, "A3_249/output/data/clients.csv");
+            GenericFileManager.save(transArr, "A3_249/output/data/transports.csv");
+            GenericFileManager.save(accomArr, "A3_249/output/data/accommodations.csv");
+            GenericFileManager.save(tripArr, "A3_249/output/data/trips.csv");
         } catch (Exception e) {
             System.out.println("Error saving data: " + e.getMessage());
             ErrorLogger.log("Error saving data: " + e.getMessage());

@@ -49,13 +49,26 @@ public class DashboardGenerator {
 	 */
     public static void generateDashboard(SmartTravelService service) throws IOException {
 
-        // Ensure output dir exists
-        new File("output").mkdirs();
+        // Ensure output directories exist
+        new File("A3_249/output").mkdirs();
+        new File("A3_249/output/charts").mkdirs();
+        new File("A3_249/output/dashboard").mkdirs();
+        
+        // Check if we have data
+        if (service.getTripCount() == 0) {
+            System.out.println("No trips to generate charts. Please load or create some trips first.");
+            return;
+        }
         
         // 1. Generate charts FIRST (your existing code)
-        TripChartGenerator.generateCostBarChart(service.getTrips());
-        TripChartGenerator.generateDestinationPieChart(service.getTrips());
-        TripChartGenerator.generateDurationLineChart(service.getTrips());
+        try {
+            TripChartGenerator.generateCostBarChart(service.getTrips());
+            TripChartGenerator.generateDestinationPieChart(service.getTrips());
+            TripChartGenerator.generateDurationLineChart(service.getTrips());
+        } catch (IOException e) {
+            System.out.println("Error generating charts: " + e.getMessage());
+            throw e;
+        }
         
         // 2. Generate HTML dashboard
         generateHTMLDashboard(service);

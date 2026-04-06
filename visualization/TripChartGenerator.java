@@ -90,6 +90,12 @@ public class TripChartGenerator {
      * @throws IOException if PNG file cannot be written
      */
     public static void generateCostBarChart(List<Trip> trips) throws IOException {
+        
+        if (trips == null || trips.isEmpty()) {
+            System.out.println("No trips available for cost bar chart");
+            return;
+        }
+        
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (int i = 0; i < trips.size(); i++) {
@@ -121,6 +127,11 @@ public class TripChartGenerator {
      * @throws IOException if PNG file cannot be written
      */
     public static void generateDestinationPieChart(List<Trip> trips) throws IOException {
+        
+        if (trips == null || trips.isEmpty()) {
+            System.out.println("No trips available for destination pie chart");
+            return;
+        }
         
     	DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
 
@@ -154,6 +165,12 @@ public class TripChartGenerator {
      * @throws IOException if PNG file cannot be written
      */
     public static void generateDurationLineChart(List<Trip> trips) throws IOException {
+        
+        if (trips == null || trips.isEmpty()) {
+            System.out.println("No trips available for duration line chart");
+            return;
+        }
+        
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (int i = 0; i < trips.size(); i++) {
