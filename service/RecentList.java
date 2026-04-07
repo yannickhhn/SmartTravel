@@ -36,4 +36,12 @@ public class RecentList<T> {
         return list.isEmpty();
     }
 
+    // Get item at index (0 = most recent)
+    public T getRecent(int index) {
+        if (index >= 0 && index < list.size()) {
+            return list.get(index);
+        }
+        return null;
+    }
+
 }

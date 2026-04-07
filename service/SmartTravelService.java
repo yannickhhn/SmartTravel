@@ -14,6 +14,7 @@ import exceptions.DuplicateEmailException;
 import exceptions.EntityNotFoundException;
 import exceptions.InvalidClientDataException;
 import exceptions.InvalidTripDataException;
+import repository.Repository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,12 @@ public class SmartTravelService {
     List<Trip> tripArr = new ArrayList<>();
     List<Transportation> transArr = new ArrayList<>();
     List<Accomodation> accomArr = new ArrayList<>();
+
+    Repository<client> clientRepo = new Repository<>();
+    Repository<Trip> tripRepo = new Repository<>();
+
+    public Repository<client> getClientRepo() { return clientRepo; }
+    public Repository<Trip> getTripRepo() { return tripRepo; }
 
     // getters
     public List<client> getClient() {
@@ -55,6 +62,7 @@ public class SmartTravelService {
         try {
             client c = new client(f, l, email, clArr);
             clArr.add(c);
+            clientRepo.add(c);
             System.out.println("New client information: ");
             System.out.println(c.toString());
             System.out.println("Client added successfully.");
@@ -73,6 +81,7 @@ public class SmartTravelService {
         try {
             Trip trip = new Trip(destination, duration, basePrice, findClientByID(clientID), transportation, accomodation, clArr);
             tripArr.add(trip);
+            tripRepo.add(trip);
             System.out.println("Trip created successfully.");
         } catch (InvalidTripDataException | EntityNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
