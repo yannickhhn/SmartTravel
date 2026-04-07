@@ -155,10 +155,10 @@ public abstract class Accomodation implements Identifiable, CsvPersistable, Comp
 	public String toCsvRow() {
 		 if (this instanceof Hotel){
             Hotel h = (Hotel) this;
-            return "HOTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getRating();
+            return "HOTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights();
         } else if (this instanceof Hostel){
             Hostel h = (Hostel) this;
-            return "HOSTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights() + ";" + h.getBed();
+            return "HOSTEL;" + h.getID() + ";" + h.getAccomodationName() + ";" + h.getLocation() + ";" + h.getPrice() + ";" + h.getNumberofNights();
         } else {
             return "";
         }
