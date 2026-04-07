@@ -11,10 +11,11 @@ import java.io.PrintWriter;
 
 public class ErrorLogger {
     
-    private static String ErrorLogFilePath = "A3_249/output/error.txt";
+    private static String ErrorLogFilePath = "output/logs/errors.txt";
 
     public static void log(String errorMessage){
         try {
+            
             PrintWriter out = new PrintWriter(new FileWriter(ErrorLogFilePath, true));
             out.println(errorMessage);
             out.close();

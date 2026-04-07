@@ -117,16 +117,38 @@ public class SmartTravelService {
     public void loadAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
         try {
             clArr.clear();
-            clArr.addAll(GenericFileManager.load("A3_249/output/data/clients.csv", client.class));
+            
+            List<client> loadedClients = GenericFileManager.load("output/data/clients.csv", client.class);
+            clArr.addAll(loadedClients);
+            for (client c : loadedClients) {
+                clientRepo.add(c);
+            }
 
             accomArr.clear();
-            accomArr.addAll(GenericFileManager.load("A3_249/output/data/accommodations.csv", Accomodation.class));
+            accomArr.addAll(GenericFileManager.load("output/data/accommodations.csv", Accomodation.class));
 
             transArr.clear();
-            transArr.addAll(GenericFileManager.load("A3_249/output/data/transports.csv", Transportation.class));
+            transArr.addAll(GenericFileManager.load("output/data/transports.csv", Transportation.class));
 
-            
-            tripArr.addAll(GenericFileManager.load("A3_249/output/data/trips.csv", Trip.class, clArr, transArr, accomArr));
+            tripArr.clear();
+           
+            List<Trip> loadedTrips = GenericFileManager.load("output/data/trips.csv", Trip.class, clArr, transArr, accomArr);
+            tripArr.addAll(loadedTrips);
+            for (Trip trip : loadedTrips) {
+                tripRepo.add(trip);
+            }
+
+            // Recalculate total spent for each client based on their trips
+            for (client c : clArr) {
+                double total = 0;
+                for (Trip trip : tripArr) {
+                    if (trip != null && trip.getClient() != null && trip.getClient().getClientID().equalsIgnoreCase(c.getClientID())) {
+                        total += trip.calculateTotalCost();
+                    }
+                }
+                // Reset and set the new total
+                c.setTotalSpent(total);
+            }
 
         } catch (Exception e) {
             System.out.println("Error loading data: " + e.getMessage() + " from file " + e.getStackTrace()[0].getFileName());
@@ -136,10 +158,10 @@ public class SmartTravelService {
 
     public void saveAllData() throws IOException, InvalidTripDataException, InvalidClientDataException, DuplicateEmailException, EntityNotFoundException {
         try {
-            GenericFileManager.save(clArr, "A3_249/output/data/clients.csv");
-            GenericFileManager.save(transArr, "A3_249/output/data/transports.csv");
-            GenericFileManager.save(accomArr, "A3_249/output/data/accommodations.csv");
-            GenericFileManager.save(tripArr, "A3_249/output/data/trips.csv");
+            GenericFileManager.save(clArr, "output/data/clients.csv");
+            GenericFileManager.save(transArr, "output/data/transports.csv");
+            GenericFileManager.save(accomArr, "output/data/accommodations.csv");
+            GenericFileManager.save(tripArr, "output/data/trips.csv");
         } catch (Exception e) {
             System.out.println("Error saving data: " + e.getMessage());
             ErrorLogger.log("Error saving data: " + e.getMessage());

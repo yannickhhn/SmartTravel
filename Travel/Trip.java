@@ -144,11 +144,22 @@ public class Trip implements Identifiable, Billable, CsvPersistable, Comparable<
 	// toString Method 
 	@Override
 	public String toString(){
+		double transportationCost = (this.transportation != null) ? this.transportation.calculateCost((int)this.duration) : 0;
+		double accomodationCost = (this.accomodation != null) ? this.accomodation.calculateCost((int)this.duration) : 0;
+		double baseCost = this.duration * this.basePrice;
+		double totalCost = calculateTotalCost();
+		
 		return 	  "Trip ID: " + this.tripID +"\n"
 				+ "Destination: " + this.destination + "\n"
-				+ "Duration: " + this.duration + "\n"
-				+ "Base Price: " + this.basePrice +"\n"
-				+ "Client: " + this.client.toString();
+				+ "Duration: " + this.duration + " days\n"
+				+ "Client: " + this.client.toString() + "\n"
+				+ "Transportation: " + (this.transportation != null ? this.transportation.toString() : "None") + "\n"
+				+ "Accommodation: " + (this.accomodation != null ? this.accomodation.toString() : "None") + "\n"
+				+ "\n--- Price Breakdown ---\n"
+				+ String.format("Base Price: $%.2f (%d days x $%.2f/day)\n", baseCost, (int)this.duration, this.basePrice)
+				+ String.format("Transportation: $%.2f\n", transportationCost)
+				+ String.format("Accommodation: $%.2f\n", accomodationCost)
+				+ String.format("Total Cost: $%.2f", totalCost);
 	}
 
 	// equals 

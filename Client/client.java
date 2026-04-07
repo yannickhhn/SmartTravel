@@ -85,6 +85,10 @@ public class client implements Identifiable, CsvPersistable, Comparable<client> 
 		this.totalSpent += amount;
 	}
 
+	public void setTotalSpent(double amount) {
+		this.totalSpent = amount;
+	}
+
 	/////mutators
 	public void setFName(String f) throws InvalidClientDataException {
 		if (f.length()>=50 | f.length()==0) {

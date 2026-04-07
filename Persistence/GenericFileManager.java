@@ -21,17 +21,7 @@ public class GenericFileManager<T extends CsvPersistable> {
         return load(filepath, clazz, null, null, null);
     }
     
-    /**
-     * Generic load method with support for Trip dependencies
-     * @param <T> Type parameter extending CsvPersistable
-     * @param filepath Path to the CSV file
-     * @param clazz Class type to load
-     * @param clients List of clients (only used for Trip loading)
-     * @param transportations List of transportations (only used for Trip loading)
-     * @param accommodations List of accommodations (only used for Trip loading)
-     * @return List of loaded items
-     * @throws Exception if loading fails
-     */
+   
     @SuppressWarnings("unchecked")
     public static <T extends CsvPersistable> List<T> load(String filepath, Class<T> clazz, 
                                                            List<client> clients, 
