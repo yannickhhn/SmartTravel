@@ -116,7 +116,7 @@ public class DashboardGenerator {
         }
         writeTripsTable(service, out);
         writeChartsSection(out);
-       // writeStats(service, out);
+        writeStats(service, out);
         out.println("    </div>");
         out.println("</body>");
         out.println("</html>");
@@ -240,7 +240,7 @@ public class DashboardGenerator {
      * @param service Service containing Trip array
      * @param out HTML PrintWriter
      */
-   /*  private static void writeStats(SmartTravelService service, PrintWriter out) {
+    private static void writeStats(SmartTravelService service, PrintWriter out) {
         
     	int tripCount = service.getTripCount();
         if (tripCount == 0) {
@@ -252,13 +252,20 @@ public class DashboardGenerator {
     	
         // 1. Total Revenue & Avg Cost
         double totalRevenue = 0.0;
+        double avgCost = 0.0;
         
-		//ADD CODE
+        for (int i = 0; i < tripCount; i++) {
+            totalRevenue += service.calculateTripTotal(i);
+        }
+        avgCost = totalRevenue / tripCount;
         
         // 2. Average Duration (days)
-        double totalDays = 0.0, avgDuration =0.0;
+        double totalDays = 0.0, avgDuration = 0.0;
         
-		//ADD CODE
+        for (int i = 0; i < tripCount; i++) {
+            totalDays += service.getTrip(i).getDuration();
+        }
+        avgDuration = totalDays / tripCount;
     	
         
         out.println("        <section class='stats-section'>");
@@ -286,13 +293,14 @@ public class DashboardGenerator {
         // Stat 4: Most Visited
         out.println("                <div class='stat-item'>");
         out.println("                    <span class='stat-label'>Most Visited</span>");
+        String mostVisited = findMostVisitedDestination(service);
+        int visitCount = countDestinationVisits(service, mostVisited);
         out.println("                    <span class='stat-value'>" + mostVisited + "<br><small>(" + visitCount + " trips)</small></span>");
         out.println("                </div>");
         
         out.println("            </div>");
         out.println("        </section>");
     }
-    */ 
 
     /**
      * Cross-platform browser launcher for dashboard.html.
@@ -321,20 +329,36 @@ public class DashboardGenerator {
     /* HELPER METHODS */
     /**
      * Finds destination with most trips
-     
+     */
     private static String findMostVisitedDestination(SmartTravelService service) {
+        String mostVisited = "N/A";
+        int maxVisits = 0;
         
-		//ADD CODE
+        for (int i = 0; i < service.getTripCount(); i++) {
+            Trip trip = service.getTrip(i);
+            if (trip != null) {
+                String destination = trip.getDestination();
+                int visitCount = countDestinationVisits(service, destination);
+                if (visitCount > maxVisits) {
+                    maxVisits = visitCount;
+                    mostVisited = destination;
+                }
+            }
+        }
+        return mostVisited;
     }
 
     /**
      * Counts trips to specific destination
-     
-    private static int countDestinationVisits(SmartTravelService service, String destination) {
-        
-		//ADD CODE
-
-    }
      */
-    
+    private static int countDestinationVisits(SmartTravelService service, String destination) {
+        int count = 0;
+        for (int i = 0; i < service.getTripCount(); i++) {
+            Trip trip = service.getTrip(i);
+            if (trip != null && trip.getDestination().equalsIgnoreCase(destination)) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
